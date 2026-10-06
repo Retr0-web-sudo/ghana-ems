@@ -1,0 +1,11 @@
+{
+  "name": "Ghana EMS Screen Generator",
+  "id": "ghana-ems-generator-v1",
+  "api": "1.0.0",
+  "main": "code.js",
+  "editorType": ["figma"],
+  "capabilities": [],
+  "enableProposedApi": false,
+  "documentAccess": "dynamic-page",
+  "networkAccess": { "allowedDomains": ["none"] }
+}

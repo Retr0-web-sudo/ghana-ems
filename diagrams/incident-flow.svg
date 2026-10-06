@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="1240" viewBox="0 0 1100 1240" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8ab4f8"/>
+    </marker>
+  </defs>
+  <rect width="1100" height="1240" fill="#0d1117"/>
+  <text x="40" y="48" fill="#e6edf3" font-size="26" font-weight="bold">Incident Lifecycle — Who Does What, When</text>
+  <text x="40" y="76" fill="#9da7b3" font-size="14">One emergency, start to finish. Right column = what enters the permanent record.</text>
+
+  <!-- Lane legend -->
+  <rect x="40" y="95" width="1020" height="40" rx="8" fill="#161b22" stroke="#30363d"/>
+  <rect x="60"  y="107" width="14" height="14" rx="3" fill="#8ab4f8"/><text x="82"  y="119" fill="#c9d1d9" font-size="12">Dispatch</text>
+  <rect x="170" y="107" width="14" height="14" rx="3" fill="#f0b429"/><text x="192" y="119" fill="#c9d1d9" font-size="12">Node A (sensor)</text>
+  <rect x="330" y="107" width="14" height="14" rx="3" fill="#e6a5f0"/><text x="352" y="119" fill="#c9d1d9" font-size="12">Node B (crew tablet)</text>
+  <rect x="540" y="107" width="14" height="14" rx="3" fill="#81c995"/><text x="562" y="119" fill="#c9d1d9" font-size="12">Mesh</text>
+  <rect x="640" y="107" width="14" height="14" rx="3" fill="#7ee0c2"/><text x="662" y="119" fill="#c9d1d9" font-size="12">Hospital</text>
+
+  <!-- ===== Step 1 ===== -->
+  <rect x="40" y="160" width="620" height="105" rx="10" fill="#161b22" stroke="#8ab4f8" stroke-width="2"/>
+  <text x="60" y="190" fill="#e6edf3" font-size="16" font-weight="bold">1 · Call intake</text>
+  <text x="60" y="214" fill="#c9d1d9" font-size="12">Dispatcher logs call: location, complaint, priority. Incident ID created (INC-####).</text>
+  <text x="60" y="236" fill="#c9d1d9" font-size="12">Nearest available unit suggested by real drive time, not straight-line distance.</text>
+  <rect x="690" y="160" width="370" height="105" rx="10" fill="#101720" stroke="#30363d"/>
+  <text x="710" y="190" fill="#f28b82" font-size="12" font-weight="bold">RECORD</text>
+  <text x="710" y="212" fill="#c9d1d9" font-size="11">incident opened · caller info · timestamps</text>
+  <text x="710" y="230" fill="#c9d1d9" font-size="11">· dispatcher identity (signed)</text>
+
+  <line x1="350" y1="265" x2="350" y2="290" stroke="#8ab4f8" stroke-width="2" marker-end="url(#a2)"/>
+
+  <!-- ===== Step 2 ===== -->
+  <rect x="40" y="292" width="620" height="105" rx="10" fill="#161b22" stroke="#e6a5f0" stroke-width="2"/>
+  <text x="60" y="322" fill="#e6edf3" font-size="16" font-weight="bold">2 · Assign → Node B receives the job</text>
+  <text x="60" y="346" fill="#c9d1d9" font-size="12">Pushed over mesh. Tablet wakes: New Call screen, navigation, priority. If mesh is down,</text>
+  <text x="60" y="364" fill="#c9d1d9" font-size="12">voice radio fallback + crew keys the incident ID manually.</text>
+  <rect x="690" y="292" width="370" height="105" rx="10" fill="#101720" stroke="#30363d"/>
+  <text x="710" y="322" fill="#f28b82" font-size="12" font-weight="bold">RECORD</text>
+  <text x="710" y="344" fill="#c9d1d9" font-size="11">unit assigned · accepted-at time · crew IDs</text>
+
+  <line x1="350" y1="397" x2="350" y2="422" stroke="#8ab4f8" stroke-width="2" marker-end="url(#a2)"/>
+
+  <!-- ===== Step 3 ===== -->
+  <rect x="40" y="424" width="620" height="105" rx="10" fill="#161b22" stroke="#e6a5f0" stroke-width="2"/>
+  <text x="60" y="454" fill="#e6edf3" font-size="16" font-weight="bold">3 · En route — C (routing) pre-computes</text>
+  <text x="60" y="478" fill="#c9d1d9" font-size="12">Routing engine shortlists hospitals now, before patient contact, using cached status.</text>
+  <text x="60" y="496" fill="#c9d1d9" font-size="12">Refreshes as bed/doctor updates arrive over mesh.</text>
+  <rect x="690" y="424" width="370" height="105" rx="10" fill="#101720" stroke="#30363d"/>
+  <text x="710" y="454" fill="#f28b82" font-size="12" font-weight="bold">RECORD</text>
+  <text x="710" y="476" fill="#c9d1d9" font-size="11">GPS track · ETA · shortlist snapshots</text>
+
+  <line x1="350" y1="529" x2="350" y2="554" stroke="#8ab4f8" stroke-width="2" marker-end="url(#a2)"/>
+
+  <!-- ===== Step 4 ===== -->
+  <rect x="40" y="556" width="620" height="125" rx="10" fill="#161b22" stroke="#f0b429" stroke-width="2"/>
+  <text x="60" y="586" fill="#e6edf3" font-size="16" font-weight="bold">4 · On scene — Node A is now the source of truth</text>
+  <text x="60" y="610" fill="#c9d1d9" font-size="12">Monitor connected → A streams vitals, runs AI (rhythm / sepsis / trauma), raises alerts.</text>
+  <text x="60" y="628" fill="#c9d1d9" font-size="12">D signs every entry, hash-chained. Bad readings (probe off, motion) quarantined.</text>
+  <text x="60" y="646" fill="#c9d1d9" font-size="12">Crew logs interventions on B; dose calculator checks against signed protocol + formulary.</text>
+  <rect x="690" y="556" width="370" height="125" rx="10" fill="#101720" stroke="#30363d"/>
+  <text x="710" y="586" fill="#f28b82" font-size="12" font-weight="bold">RECORD</text>
+  <text x="710" y="608" fill="#c9d1d9" font-size="11">vitals series (append-only) · AI alerts + crew</text>
+  <text x="710" y="626" fill="#c9d1d9" font-size="11">acknowledgements · interventions with doses</text>
+  <text x="710" y="644" fill="#c9d1d9" font-size="11">· protocol version in force · all signed</text>
+
+  <line x1="350" y1="681" x2="350" y2="706" stroke="#8ab4f8" stroke-width="2" marker-end="url(#a2)"/>
+
+  <!-- ===== Step 5 ===== -->
+  <rect x="40" y="708" width="620" height="125" rx="10" fill="#161b22" stroke="#e6a5f0" stroke-width="2"/>
+  <text x="60" y="738" fill="#e6edf3" font-size="16" font-weight="bold">5 · Transport decision — C ranks, crew confirms</text>
+  <text x="60" y="762" fill="#c9d1d9" font-size="12">Ranking: doctor on shift · facility match (surgery/cath/ICU/OB) · beds + queue · drive time.</text>
+  <text x="60" y="780" fill="#f28b82" font-size="12" font-weight="bold">HARD GATE: only hospitals that accepted the data packet appear at all.</text>
+  <text x="60" y="798" fill="#c9d1d9" font-size="12">Dispatch sees the same ranking; any override is logged and signed.</text>
+  <rect x="690" y="708" width="370" height="125" rx="10" fill="#101720" stroke="#30363d"/>
+  <text x="710" y="738" fill="#f28b82" font-size="12" font-weight="bold">RECORD</text>
+  <text x="710" y="760" fill="#c9d1d9" font-size="11">ranking output with score breakdown ·</text>
+  <text x="710" y="778" fill="#c9d1d9" font-size="11">destination chosen · override (if any) + reason</text>
+
+  <line x1="350" y1="833" x2="350" y2="858" stroke="#8ab4f8" stroke-width="2" marker-end="url(#a2)"/>
+
+  <!-- ===== Step 6 ===== -->
+  <rect x="40" y="860" width="620" height="105" rx="10" fill="#161b22" stroke="#81c995" stroke-width="2"/>
+  <text x="60" y="890" fill="#e6edf3" font-size="16" font-weight="bold">6 · Hospital notified — packet flows over mesh</text>
+  <text x="60" y="914" fill="#c9d1d9" font-size="12">Patient packet (vitals trend, alerts, interventions, ETA) arrives at ED node.</text>
+  <text x="60" y="932" fill="#c9d1d9" font-size="12">ED taps Accept / Query / Refuse-with-reason. Accept = bed reserved, team prepped.</text>
+  <rect x="690" y="860" width="370" height="105" rx="10" fill="#101720" stroke="#30363d"/>
+  <text x="710" y="890" fill="#f28b82" font-size="12" font-weight="bold">RECORD</text>
+  <text x="710" y="912" fill="#c9d1d9" font-size="11">packet delivered-at · hospital response ·</text>
+  <text x="710" y="930" fill="#c9d1d9" font-size="11">responding clinician identity (countersigned)</text>
+
+  <line x1="350" y1="965" x2="350" y2="990" stroke="#8ab4f8" stroke-width="2" marker-end="url(#a2)"/>
+
+  <!-- ===== Step 7 ===== -->
+  <rect x="40" y="992" width="620" height="105" rx="10" fill="#161b22" stroke="#7ee0c2" stroke-width="2"/>
+  <text x="60" y="1022" fill="#e6edf3" font-size="16" font-weight="bold">7 · Handover — QR, phone to phone, offline</text>
+  <text x="60" y="1046" fill="#c9d1d9" font-size="12">Encrypted, single-use, 5-min expiry. Scan writes an audit row: who received what, when.</text>
+  <text x="60" y="1064" fill="#c9d1d9" font-size="12">Hospital's own assessments append in THEIR authority domain — field vitals never overwritten.</text>
+  <rect x="690" y="992" width="370" height="105" rx="10" fill="#101720" stroke="#30363d"/>
+  <text x="710" y="1022" fill="#f28b82" font-size="12" font-weight="bold">RECORD</text>
+  <text x="710" y="1044" fill="#c9d1d9" font-size="11">handover audit row · receiving clinician ·</text>
+  <text x="710" y="1062" fill="#c9d1d9" font-size="11">hash verified ✓ · both sides countersign</text>
+
+  <line x1="350" y1="1097" x2="350" y2="1122" stroke="#8ab4f8" stroke-width="2" marker-end="url(#a2)"/>
+
+  <!-- ===== Step 8 ===== -->
+  <rect x="40" y="1124" width="620" height="85" rx="10" fill="#161b22" stroke="#30363d" stroke-width="2"/>
+  <text x="60" y="1154" fill="#e6edf3" font-size="16" font-weight="bold">8 · Close — record converges</text>
+  <text x="60" y="1178" fill="#c9d1d9" font-size="12">Incident sealed. Dispatch holds full replica; peers hold countersigned summaries.</text>
+  <text x="60" y="1196" fill="#c9d1d9" font-size="12">Exportable as a single inquiry package: what happened · what was required · who approved.</text>
+  <rect x="690" y="1124" width="370" height="85" rx="10" fill="#101720" stroke="#30363d"/>
+  <text x="710" y="1154" fill="#f28b82" font-size="12" font-weight="bold">RECORD</text>
+  <text x="710" y="1176" fill="#c9d1d9" font-size="11">sealed incident · fleet-wide replicas ·</text>
+  <text x="710" y="1194" fill="#c9d1d9" font-size="11">outcome appended by hospital later</text>
+</svg>

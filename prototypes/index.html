@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ghana EMS — Thin Client Prototypes</title>
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161b22; --panel2:#1f2733; --line:#30363d;
+    --txt:#e6edf3; --dim:#9da7b3; --blue:#8ab4f8; --green:#81c995;
+    --amber:#f0b429; --red:#f28b82; --purple:#e6a5f0; --teal:#7ee0c2;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI",Arial,sans-serif}
+  body{background:var(--bg);color:var(--txt);min-height:100vh}
+  header{padding:16px 24px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  header h1{font-size:18px}
+  header .tag{font-size:11px;color:var(--dim);border:1px solid var(--line);border-radius:10px;padding:2px 8px}
+  .tabs{display:flex;gap:8px;padding:14px 24px 0}
+  .tab{padding:8px 18px;border:1px solid var(--line);border-bottom:none;border-radius:8px 8px 0 0;
+       background:var(--panel);color:var(--dim);cursor:pointer;font-size:14px}
+  .tab.active{color:var(--txt);background:var(--panel2);border-color:var(--blue);font-weight:600}
+  .client{display:none;border-top:1px solid var(--blue);padding:20px 24px}
+  .client.active{display:block}
+  .device{max-width:520px;margin:0 auto;background:var(--panel);border:1px solid var(--line);
+          border-radius:16px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.5)}
+  .device.wide{max-width:1150px}
+  .statusbar{display:flex;justify-content:space-between;padding:8px 14px;font-size:11px;color:var(--dim);
+             background:var(--panel2);border-bottom:1px solid var(--line)}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:middle}
+  .dot.g{background:var(--green)} .dot.a{background:var(--amber)} .dot.r{background:var(--red)} .dot.b{background:var(--blue)}
+  .screen{display:none;padding:16px;min-height:480px}
+  .screen.active{display:block}
+  .screen h2{font-size:16px;margin-bottom:12px}
+  .alert{background:#3d1414;border:1px solid var(--red);border-radius:10px;padding:12px;margin-bottom:14px}
+  .alert .ttl{color:var(--red);font-weight:700;font-size:14px;margin-bottom:6px}
+  .alert p{font-size:12px;color:var(--txt);margin-bottom:8px}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap}
+  button{background:var(--panel2);color:var(--txt);border:1px solid var(--line);border-radius:8px;
+         padding:8px 14px;font-size:13px;cursor:pointer}
+  button:hover{border-color:var(--blue)}
+  button.primary{background:var(--blue);color:#0d1117;font-weight:600;border-color:var(--blue)}
+  button.danger{border-color:var(--red);color:var(--red)}
+  button.ok{border-color:var(--green);color:var(--green)}
+  .vitals{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+  .vital{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px;text-align:center}
+  .vital .k{font-size:10px;color:var(--dim)}
+  .vital .v{font-size:22px;font-weight:700;margin:2px 0}
+  .vital.bad{border-color:var(--red)} .vital.bad .v{color:var(--red)}
+  .vital.warn{border-color:var(--amber)} .vital.warn .v{color:var(--amber)}
+  .ecg{background:#0a0e14;border:1px solid var(--line);border-radius:8px;padding:6px;margin-bottom:12px}
+  .navbar{display:flex;border-top:1px solid var(--line);background:var(--panel2)}
+  .navbar button{flex:1;border:none;border-radius:0;background:none;padding:12px 4px;font-size:11px;color:var(--dim)}
+  .navbar button.active{color:var(--blue);font-weight:600}
+  .card{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px}
+  .card .row{display:flex;justify-content:space-between;font-size:13px;padding:3px 0}
+  .rank{display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid var(--line);
+        border-radius:10px;padding:12px;margin-bottom:10px;cursor:pointer}
+  .rank:hover{border-color:var(--green)}
+  .rank.selected{border-color:var(--green);box-shadow:0 0 0 1px var(--green)}
+  .rank .pos{font-size:20px;font-weight:700;color:var(--dim);width:26px}
+  .rank .score{margin-left:auto;font-size:20px;font-weight:700;color:var(--green)}
+  .rank .meta{font-size:11px;color:var(--dim)}
+  .rank.gated{opacity:.45;cursor:not-allowed}
+  .qr{width:190px;height:190px;margin:14px auto;display:grid;place-items:center;background:#fff;border-radius:12px}
+  .qr svg{display:block}
+  .cols{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .col h3{font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+  .incident{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px;margin-bottom:8px;font-size:12px;cursor:pointer}
+  .incident:hover{border-color:var(--blue)}
+  .incident .prio{color:var(--red);font-weight:700}
+  .mapbox{height:230px;background:
+    linear-gradient(#0a0e14,#0a0e14) padding-box,
+    repeating-linear-gradient(0deg,transparent 0 29px,#1c2330 29px 30px),
+    repeating-linear-gradient(90deg,transparent 0 29px,#1c2330 29px 30px);
+    background-color:#0a0e14;border:1px solid var(--line);border-radius:10px;position:relative;margin-bottom:14px}
+  .pin{position:absolute;width:12px;height:12px;border-radius:50%;transform:translate(-50%,-50%)}
+  .pin span{position:absolute;top:14px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--dim);white-space:nowrap}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+  th{color:var(--dim);font-weight:600}
+  .pill{font-size:10px;border-radius:8px;padding:1px 7px;border:1px solid}
+  .pill.g{color:var(--green);border-color:var(--green)} .pill.r{color:var(--red);border-color:var(--red)}
+  .pill.a{color:var(--amber);border-color:var(--amber)}
+  .flash{animation:fl 1s infinite}
+  @keyframes fl{50%{opacity:.55}}
+  .note{font-size:11px;color:var(--dim);margin-top:10px}
+  .split{display:grid;grid-template-columns:1.2fr 1fr;gap:16px}
+  @media(max-width:900px){.split{grid-template-columns:1fr}.cols{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Ghana EMS — Thin Client Prototypes</h1>
+  <span class="tag">PROTOTYPE — clickable flows, fake data</span>
+  <span class="tag">Node B (crew) · Dispatch · Hospital ED</span>
+</header>
+
+<div class="tabs">
+  <div class="tab active" data-client="paramedic">🚑 Paramedic (Node B)</div>
+  <div class="tab" data-client="dispatch">🖥 Dispatch Board</div>
+  <div class="tab" data-client="hospital">🏥 Hospital ED Receiver</div>
+</div>
+
+<!-- ==================== PARAMEDIC ==================== -->
+<div class="client active" id="client-paramedic">
+  <div class="device">
+    <div class="statusbar">
+      <span><span class="dot g"></span>NODE-07 LIVE</span>
+      <span>mesh: 3 hops · LoRa 11 km</span>
+      <span id="clock">14:22</span>
+    </div>
+
+    <!-- Screen: New Call -->
+    <div class="screen" data-screen="newcall">
+      <h2>Incoming Call — INC-0421</h2>
+      <div class="card">
+        <div class="row"><span>Complaint</span><b>Road traffic collision, 2 casualties</b></div>
+        <div class="row"><span>Location</span><b>N1 Highway, Mile 7 junction</b></div>
+        <div class="row"><span>Priority</span><b style="color:var(--red)">P1 — immediate</b></div>
+        <div class="row"><span>Distance</span><b>4.1 km · ~9 min (traffic model)</b></div>
+        <div class="row"><span>Dispatcher</span><b>Accra Control — A. Mensah</b></div>
+      </div>
+      <div class="card">
+        <div class="row"><span>Pre-route (C engine)</span><span class="pill g">ready</span></div>
+        <div class="row" style="font-size:12px;color:var(--dim)">Shortlist computed en route, refreshes as hospital status updates arrive over mesh.</div>
+      </div>
+      <div class="btnrow">
+        <button class="primary" data-go="vitals">Accept &amp; Start Navigation</button>
+        <button class="danger">Decline (logged)</button>
+      </div>
+    </div>
+
+    <!-- Screen: Live Vitals -->
+    <div class="screen active" data-screen="vitals">
+      <div class="alert flash">
+        <div class="ttl">██ CRITICAL ██ SpO₂ 82% ↓ — sustained 4 min</div>
+        <p>Protocol 4.2 (signed v7, NAS-MD +4) · Escalate: O₂ via BVM 15 L · Sepsis model: 0.81 HIGH</p>
+        <div class="btnrow">
+          <button class="ok" onclick="this.closest('.alert').style.display='none'">Acknowledge</button>
+          <button class="primary" data-go="log">Treat now</button>
+          <button>False alarm</button>
+        </div>
+      </div>
+      <div class="vitals">
+        <div class="vital warn"><div class="k">HR</div><div class="v">128</div><div class="k">bpm ↑</div></div>
+        <div class="vital bad"><div class="k">SpO₂</div><div class="v">82</div><div class="k">% ↓</div></div>
+        <div class="vital bad"><div class="k">BP</div><div class="v">88/54</div><div class="k">mmHg ↓</div></div>
+        <div class="vital warn"><div class="k">RR</div><div class="v">32</div><div class="k">/min ↑</div></div>
+        <div class="vital"><div class="k">Temp</div><div class="v">38.9</div><div class="k">°C</div></div>
+        <div class="vital warn"><div class="k">GCS</div><div class="v">13</div><div class="k">↓</div></div>
+        <div class="vital bad"><div class="k">Rhythm</div><div class="v" style="font-size:15px">VT ⚠</div><div class="k">shockable</div></div>
+        <div class="vital"><div class="k">EtCO₂</div><div class="v">29</div><div class="k">mmHg</div></div>
+      </div>
+      <div class="ecg">
+        <svg width="100%" height="70" viewBox="0 0 480 70" preserveAspectRatio="none">
+          <polyline fill="none" stroke="#81c995" stroke-width="1.6"
+            points="0,45 20,45 28,20 36,62 44,45 80,45 88,22 96,60 104,45 140,45 148,18 156,64 164,45 200,45 208,24 216,58 224,45 260,45 268,20 276,62 284,45 320,45 328,22 336,60 344,45 380,45 388,18 396,64 404,45 440,45 448,24 456,58 464,45 480,45"/>
+          <text x="8" y="14" fill="#9da7b3" font-size="9">II · 250 Hz · from Node A (monitor tap)</text>
+        </svg>
+      </div>
+      <div class="card" style="font-size:12px">
+        <div class="row"><span>30-min trend</span><span>SpO₂ 96→82 ↓ · HR 88→128 ↑ · MAP 71→65 ↓</span></div>
+        <div class="row"><span>Record</span><span class="pill g">signed · chained · 2 peers countersigned</span></div>
+      </div>
+      <div class="note">Node A records even if this tablet reboots. Field vitals are authoritative; quarantined artefacts excluded.</div>
+    </div>
+
+    <!-- Screen: Intervention Log -->
+    <div class="screen" data-screen="log">
+      <h2>Log Intervention</h2>
+      <div class="card">
+        <div class="row"><span>Drug</span><b>Adrenaline 1 mg/mL</b></div>
+        <div class="row"><span>Patient weight</span><b>70 kg (est.)</b></div>
+        <div class="row"><span>Protocol 4.2 dose</span><b style="color:var(--green)">1 mg IV — auto-computed ✓</b></div>
+        <div class="row"><span>Max dose check</span><span class="pill g">within limit</span></div>
+        <div class="row"><span>Contraindications</span><span class="pill g">none matched</span></div>
+      </div>
+      <div class="card">
+        <div class="row"><span>Protocol authority</span><span style="font-size:11px">v7 signed by NAS-MD + 4/5 council</span></div>
+        <div class="row"><span>Formulary</span><span style="font-size:11px">Ghana EML 2023 · verified</span></div>
+      </div>
+      <div class="btnrow">
+        <button class="primary" data-go="vitals">Sign &amp; Log</button>
+        <button data-go="vitals">Cancel</button>
+      </div>
+      <div class="note">Entry is hash-chained and signed at save. Cannot be edited later — only amended with a new signed entry.</div>
+    </div>
+
+    <!-- Screen: Route -->
+    <div class="screen" data-screen="route">
+      <h2>Destination — C Engine Ranking <span class="pill g">live</span></h2>
+      <div class="rank selected" data-go="handover">
+        <div class="pos">1</div>
+        <div><b>Korle Bu Teaching</b><div class="meta">3.2 km · 8 min · cath lab ✓ · cardiologist on shift ✓ · 4 beds · queue 2</div></div>
+        <div class="score">89</div>
+      </div>
+      <div class="rank" data-go="handover">
+        <div class="pos">2</div>
+        <div><b>37 Military</b><div class="meta">5.8 km · 12 min · cath lab ✓ · cardiologist ✓ · 2 beds · queue 5</div></div>
+        <div class="score">74</div>
+      </div>
+      <div class="rank" data-go="handover">
+        <div class="pos">3</div>
+        <div><b>Ridge Hospital</b><div class="meta">6.1 km · 13 min · cath lab ✓ · no cardiologist until 18:00 · 6 beds</div></div>
+        <div class="score">51</div>
+      </div>
+      <div class="rank gated">
+        <div class="pos">✗</div>
+        <div><b>Accra General</b><div class="meta">2.4 km · gated out: has NOT accepted patient packet</div></div>
+        <div class="score" style="color:var(--red)">—</div>
+      </div>
+      <div class="note">Hard gate: a hospital that hasn't acknowledged the packet is never a destination. Dispatch sees this same list; overrides are logged + signed.</div>
+    </div>
+
+    <!-- Screen: Handover -->
+    <div class="screen" data-screen="handover">
+      <h2>Handover — INC-0421 → Korle Bu</h2>
+      <div class="card" style="font-size:12px">
+        <div class="row"><span>Payload</span><span>vitals trend · AI alerts · interventions · ETA 9 min</span></div>
+        <div class="row"><span>Integrity</span><span class="pill g">SHA-256 ✓ signed NODE-07</span></div>
+        <div class="row"><span>Expiry</span><span class="pill a">single-use · 5:00</span></div>
+      </div>
+      <div class="qr">
+        <svg width="170" height="170" viewBox="0 0 21 21">
+          <rect width="21" height="21" fill="#fff"/>
+          <g fill="#000">
+            <rect x="0" y="0" width="7" height="7"/><rect x="1" y="1" width="5" height="5" fill="#fff"/><rect x="2" y="2" width="3" height="3"/>
+            <rect x="14" y="0" width="7" height="7"/><rect x="15" y="1" width="5" height="5" fill="#fff"/><rect x="16" y="2" width="3" height="3"/>
+            <rect x="0" y="14" width="7" height="7"/><rect x="1" y="15" width="5" height="5" fill="#fff"/><rect x="2" y="16" width="3" height="3"/>
+            <rect x="9" y="1" width="1" height="1"/><rect x="11" y="2" width="1" height="2"/><rect x="9" y="5" width="2" height="1"/>
+            <rect x="13" y="9" width="1" height="1"/><rect x="15" y="10" width="2" height="1"/><rect x="18" y="9" width="1" height="2"/>
+            <rect x="9" y="9" width="1" height="3"/><rect x="11" y="11" width="2" height="1"/><rect x="9" y="14" width="1" height="1"/>
+            <rect x="11" y="16" width="1" height="2"/><rect x="14" y="14" width="2" height="1"/><rect x="17" y="15" width="1" height="1"/>
+            <rect x="19" y="14" width="2" height="2"/><rect x="14" y="18" width="1" height="2"/><rect x="16" y="19" width="3" height="1"/>
+            <rect x="9" y="19" width="1" height="1"/><rect x="13" y="12" width="1" height="1"/><rect x="19" y="12" width="1" height="1"/>
+          </g>
+        </svg>
+      </div>
+      <p style="text-align:center;font-size:12px;color:var(--dim)">Receiving clinician scans with Hospital ED app.<br>Scan writes a signed audit row on both sides.</p>
+    </div>
+
+    <!-- Screen: Node Health -->
+    <div class="screen" data-screen="health">
+      <h2>Node Health</h2>
+      <div class="card" style="font-size:13px">
+        <div class="row"><span>Node A (sensor tap)</span><span class="pill g">recording</span></div>
+        <div class="row"><span>Monitor link</span><span>Mindray uMEC10 · BLE · 1.2 s latency</span></div>
+        <div class="row"><span>AI models</span><span>rhythm v3 · sepsis v2 · trauma v1 — 240 ms</span></div>
+        <div class="row"><span>Mesh neighbours</span><span>NODE-04 (2 km) · DISPATCH (11 km)</span></div>
+        <div class="row"><span>Store-and-forward queue</span><span>0 pending</span></div>
+        <div class="row"><span>Protocol bundle</span><span>v7 · 5/5 signatures valid</span></div>
+        <div class="row"><span>Key status</span><span class="pill g">case key active · wrapped at rest</span></div>
+        <div class="row"><span>Battery / power</span><span>vehicle 12 V ✓ · UPS 41 min</span></div>
+      </div>
+      <div class="note">This is the field-debug screen. If anything here is red, the crew still has full manual fallback.</div>
+    </div>
+
+    <div class="navbar">
+      <button data-go="newcall">📋 Call</button>
+      <button data-go="vitals" class="active">💓 Vitals</button>
+      <button data-go="log">💉 Log</button>
+      <button data-go="route">🏥 Route</button>
+      <button data-go="handover">🔗 Handover</button>
+      <button data-go="health">⚙ Node</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== DISPATCH ==================== -->
+<div class="client" id="client-dispatch">
+  <div class="device wide">
+    <div class="statusbar">
+      <span><span class="dot g"></span>NAS ACCRA CONTROL</span>
+      <span>41 units · 27 available · 4 en-route · mesh healthy</span>
+      <span>14:22</span>
+    </div>
+    <div class="screen active">
+      <div class="mapbox">
+        <div class="pin" style="left:22%;top:38%;background:var(--green)"><span>NODE-04</span></div>
+        <div class="pin" style="left:46%;top:60%;background:var(--amber)"><span>NODE-07 ▸ on scene</span></div>
+        <div class="pin" style="left:63%;top:30%;background:var(--blue)"><span>NODE-12 ▸ enroute</span></div>
+        <div class="pin" style="left:78%;top:55%;background:var(--red)"><span>NODE-19 ▸ transport</span></div>
+        <div class="pin" style="left:55%;top:44%;background:#fff;border-radius:2px"><span>Korle Bu ▣</span></div>
+        <div class="pin" style="left:70%;top:70%;background:#fff;border-radius:2px"><span>37 Mil ▣</span></div>
+        <span style="position:absolute;right:8px;bottom:6px;font-size:10px;color:var(--dim)">OSM cached tiles — no internet needed</span>
+      </div>
+      <div class="split">
+        <div>
+          <div class="cols">
+            <div class="col"><h3>Pending (6)</h3>
+              <div class="incident"><span class="prio">●●●</span> INC-0421 RTC, 2 casualties<br><span style="color:var(--dim)">N1 Mile 7 · 2 min ago</span></div>
+              <div class="incident"><span class="prio">●●</span> INC-0420 OB labour<br><span style="color:var(--dim)">Madina · 6 min ago</span></div>
+            </div>
+            <div class="col"><h3>Dispatched (4)</h3>
+              <div class="incident">INC-0419 NODE-12<br><span style="color:var(--dim)">ETA scene 4 min</span></div>
+            </div>
+            <div class="col"><h3>On Scene (3)</h3>
+              <div class="incident" style="border-color:var(--amber)">INC-0416 NODE-07<br><span style="color:var(--amber)">CRITICAL: SpO₂ 82 · VT</span><br><span style="color:var(--dim)">6 min on scene · AI sepsis 0.81</span></div>
+            </div>
+            <div class="col"><h3>Transport (3)</h3>
+              <div class="incident">INC-0411 NODE-19 → Korle Bu<br><span style="color:var(--dim)">ETA 9 min · packet accepted ✓</span></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h2 style="font-size:14px;margin-bottom:8px">Routing Output — INC-0416 (sepsis/VT)</h2>
+          <table>
+            <tr><th>#</th><th>Hospital</th><th>Dist</th><th>Capability</th><th>Beds</th><th>Score</th></tr>
+            <tr><td>1</td><td>Korle Bu</td><td>3.2 km</td><td><span class="pill g">ICU + cardio</span></td><td>4</td><td><b style="color:var(--green)">89</b></td></tr>
+            <tr><td>2</td><td>37 Military</td><td>5.8 km</td><td><span class="pill g">ICU + cardio</span></td><td>2</td><td>74</td></tr>
+            <tr><td>3</td><td>Ridge</td><td>6.1 km</td><td><span class="pill a">ICU, no cardio till 18:00</span></td><td>6</td><td>51</td></tr>
+            <tr style="opacity:.45"><td>✗</td><td>Accra Gen</td><td>2.4 km</td><td colspan="2"><span class="pill r">packet not accepted</span></td><td>—</td></tr>
+          </table>
+          <div class="btnrow" style="margin-top:10px">
+            <button class="primary">Confirm crew choice</button>
+            <button class="danger">Override (logged + signed)</button>
+          </div>
+          <div class="note">Dispatch holds a full CRDT replica of every record and countersigns them — backup survives any vehicle loss.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== HOSPITAL ==================== -->
+<div class="client" id="client-hospital">
+  <div class="device">
+    <div class="statusbar">
+      <span><span class="dot g"></span>KORLE BU ED NODE</span>
+      <span>beds 4 · cardio on shift · queue 2</span>
+      <span>14:22</span>
+    </div>
+
+    <div class="screen active" data-screen="scan">
+      <h2>Receive Patient</h2>
+      <div class="card" style="text-align:center;padding:34px">
+        <div style="font-size:40px">▣</div>
+        <p style="color:var(--dim);font-size:13px;margin:8px 0 14px">Point at crew QR — or packet may already be here via mesh</p>
+        <button class="primary" data-go="card">Simulate scan</button>
+      </div>
+      <div class="card">
+        <div class="row"><span>Pre-arrival packets</span><span class="pill g">1 received</span></div>
+        <div class="row"><span>INC-0411 · NODE-19</span><span>ETA 9 min</span></div>
+        <button style="margin-top:8px;width:100%" data-go="card">Open packet</button>
+      </div>
+    </div>
+
+    <div class="screen" data-screen="card">
+      <h2>INC-0411 <span class="pill g">SIGNED ✓ NODE-19</span></h2>
+      <div class="card">
+        <div class="row"><span>Patient</span><b>54 M · chest pain 40 min · STEMI</b></div>
+        <div class="row"><span>Vitals now</span><b>HR 128 · SpO₂ 94 · BP 148/92 · RR 22</b></div>
+        <div class="row"><span>Trend</span><span style="font-size:12px">SpO₂ 89→94 after O₂ · HR 141→128</span></div>
+        <div class="row"><span>AI alerts</span><span style="font-size:12px">STEMI pattern 0.93 · acknowledged by crew 14:07</span></div>
+        <div class="row"><span>Interventions</span><span style="font-size:12px">ASA 300 mg · GTN 0.4 mg ×2 · O₂ 4 L</span></div>
+        <div class="row"><span>Protocol</span><span style="font-size:12px">cardiac 2.1 v5 · 5/5 signatures</span></div>
+        <div class="row"><span>ETA</span><b>9 min · crew of 2</b></div>
+      </div>
+      <div class="btnrow">
+        <button class="primary" data-go="accepted">Accept — reserve bed</button>
+        <button>Query crew</button>
+        <button class="danger">Refuse (reason required)</button>
+      </div>
+      <div class="note">Acceptance publishes to the mesh and countersigns the record. Refusals need a reason — it becomes part of the incident record.</div>
+    </div>
+
+    <div class="screen" data-screen="accepted">
+      <h2 style="color:var(--green)">✓ Accepted — INC-0411</h2>
+      <div class="card" style="font-size:13px">
+        <div class="row"><span>Bed</span><b>Resus 2 reserved</b></div>
+        <div class="row"><span>Team</span><b>Cardio paged · Dr. Osei notified</b></div>
+        <div class="row"><span>Ambulance</span><span>NODE-19 updated · crew sees "bed waiting"</span></div>
+        <div class="row"><span>Record</span><span class="pill g">countersigned · audit row written</span></div>
+      </div>
+      <button data-go="scan">Back to receiver</button>
+    </div>
+
+    <div class="navbar">
+      <button data-go="scan" class="active">▣ Receive</button>
+      <button data-go="card">🧾 Patient</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // client tabs
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.onclick=()=>{
+      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+      document.querySelectorAll('.client').forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+      document.getElementById('client-'+t.dataset.client).classList.add('active');
+    };
+  });
+  // in-device navigation
+  document.querySelectorAll('[data-go]').forEach(b=>{
+    b.onclick=e=>{
+      e.stopPropagation();
+      const dev=b.closest('.device');
+      dev.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+      const target=dev.querySelector('[data-screen="'+b.dataset.go+'"]');
+      if(target) target.classList.add('active');
+      dev.querySelectorAll('.navbar button').forEach(n=>{
+        n.classList.toggle('active', n.dataset.go===b.dataset.go);
+      });
+      window.scrollTo({top:0,behavior:'smooth'});
+    };
+  });
+  // clock
+  setInterval(()=>{document.querySelectorAll('#clock').forEach(c=>{
+    const d=new Date();c.textContent=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+  });},1000);
+</script>
+</body>
+</html>
