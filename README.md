@@ -25,7 +25,7 @@ diagrams/
   incident-flow.svg      8-step incident lifecycle (who acts + what gets recorded)
 prototypes/
   index.html             Clickable prototypes: Paramedic · Dispatch · Hospital (standalone, no build)
-  shot-*.png             Screenshots of the three clients
+  v2-*.png               Screenshots of the v2 design
 figma-plugin/            Figma plugin that generates all screens as native editable frames
 ```
 
@@ -33,12 +33,24 @@ figma-plugin/            Figma plugin that generates all screens as native edita
 
 Open `prototypes/index.html` in any browser — no build, no server, no dependencies.
 Click through: vitals alert → treat → route → handover QR, then switch tabs to Dispatch and Hospital.
+On the Vitals screen: **CPR mode** opens the arrest overlay (live timer + 110/min metronome), the
+one-tap quick-log chips write signed entries, and the lineage row flags a telemetry gap.
 
 ## Get the designs into Figma
 
-See `figma-plugin/README.md` — import the manifest as a dev plugin, run once, get 6 native frames.
-(Alternative: Figma's `html.to.design` plugin on the served prototype.)
+Import `figma-plugin/manifest.json` via **Plugins → Development → Import plugin from manifest**,
+then run **Ghana EMS Screen Generator** (or just press **Ctrl+Alt+P** for "Run last plugin").
+
+It generates 7 native, editable frames and cleans up its previous output on every run, so you can
+re-run it as often as you like. A white **ZZ-DIAG** frame also gets created listing loaded fonts,
+any node-level errors, and the child count per screen — if a frame comes out empty, that frame
+tells you exactly why.
+
+> Note: the plugin is rerun-safe (it deletes frames matching its own naming before regenerating).
+> The Figma AI agent may leave "Variation" frames behind if you trigger it by accident — rerunning
+> the plugin clears those too.
 
 ## Status
 
-Simulation/design build. No real patient data. Clinical content is placeholder pending NAS protocol council sign-off (see PLAN.md §3 — the governance memo is the first real-world task).
+Simulation/design build. No real patient data. Clinical content is placeholder pending NAS protocol
+council sign-off (see PLAN.md §3 — the governance memo is the first real-world task).
