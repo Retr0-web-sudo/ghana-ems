@@ -2,696 +2,781 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ghana EMS — Thin Clients v2</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ghana EMS — Thin Clients v3</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --ink:#0A101E; --ink2:#0E1626; --panel:#111B30; --panel2:#16223C;
-    --hair:rgba(148,178,255,.14); --hair2:rgba(148,178,255,.24);
-    --txt:#EAF0FA; --dim:#8A97B0; --faint:#5A6A85;
-    --phos:#34F5A5; --phos-dim:rgba(52,245,165,.35);
-    --cyan:#5CC8FF; --amber:#FFB224; --red:#FF5A5A; --red-deep:#C73333;
-    --violet:#B79CFF; --teal:#4FD8C4; --gold:#F0B429;
-    --glass:rgba(20,30,54,.72);
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html{font-size:15px}
-  body{background:var(--ink);color:var(--txt);font-family:Inter,system-ui,sans-serif;min-height:100vh;
-       -webkit-font-smoothing:antialiased}
-  .mono{font-family:"JetBrains Mono",monospace}
-  .disp{font-family:"Space Grotesk",sans-serif}
+/* ============================================================
+   GHANA EMS v3 — "instrument faceplate"
+   Casing: warm graphite. Legend: sodium amber. Signal: cyan.
+   Vitals are range rails (position within physiology), not numbers.
+   ============================================================ */
+:root{
+  --shell:#14110F;      /* Bakelite casing            */
+  --panel:#1C1815;      /* instrument sub-panel       */
+  --panel-2:#241F1B;    /* raised bezel               */
+  --engrave:#0D0B0A;    /* recessed track             */
+  --brass:#C9A961;      /* structural hairline        */
+  --legend:#EFE7DC;     /* primary legend text        */
+  --legend-2:#A89C8C;   /* secondary legend           */
+  --legend-3:#7A6F62;   /* engraved / dormant         */
+  --amber:#F5A524;      /* annunciator amber          */
+  --amber-dim:rgba(245,165,36,.14);
+  --cyan:#7FD4F5;       /* live signal                */
+  --cyan-dim:rgba(127,212,245,.16);
+  --red:#FF4D4D;        /* critical only              */
+  --red-deep:#5A1714;
+  --green:#4ADE80;      /* confirmed / signed         */
+  --r:2px;              /* instruments have no radius */
+  --tap:48px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:15px}
+body{
+  background:var(--shell);color:var(--legend);
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+  min-height:100vh;-webkit-font-smoothing:antialiased;
+}
+.mono{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.disp{font-family:"Archivo",sans-serif}
 
-  /* ============ SHELL ============ */
-  header{padding:18px 28px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
-         border-bottom:1px solid var(--hair)}
-  header h1{font-family:"Space Grotesk";font-size:19px;font-weight:700;letter-spacing:.2px}
-  header h1 em{font-style:normal;color:var(--phos)}
-  .tag{font-family:"JetBrains Mono";font-size:10px;letter-spacing:.08em;text-transform:uppercase;
-       color:var(--dim);border:1px solid var(--hair);border-radius:99px;padding:4px 10px}
-  .tabs{display:flex;gap:6px;padding:16px 28px 0}
-  .tab{font-family:"Space Grotesk";font-weight:600;font-size:13px;letter-spacing:.02em;
-       padding:10px 20px;border-radius:12px 12px 0 0;color:var(--dim);cursor:pointer;
-       border:1px solid transparent;border-bottom:none;transition:all .18s}
-  .tab:hover{color:var(--txt)}
-  .tab.active{color:var(--txt);background:var(--panel);border-color:var(--hair);
-              box-shadow:inset 0 2px 0 var(--phos)}
-  .client{display:none;border-top:1px solid var(--hair);padding:26px 28px;animation:fade .25s}
-  .client.active{display:block}
-  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+/* ── shell ───────────────────────────────────────────── */
+header{
+  padding:20px 28px;border-bottom:1px solid var(--brass);
+  display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+  background:linear-gradient(180deg,#1C1815,#14110F);
+}
+header h1{font-family:"Archivo";font-size:20px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+header h1 em{font-style:normal;color:var(--amber)}
+.tag{font-family:"IBM Plex Mono";font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--legend-2);border:1px solid rgba(201,169,97,.35);padding:4px 9px}
+.tabs{display:flex;gap:2px;padding:14px 28px 0}
+.tab{
+  font-family:"Archivo";font-weight:600;font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+  padding:11px 20px;border:1px solid transparent;border-bottom:none;border-radius:var(--r) var(--r) 0 0;
+  background:transparent;color:var(--legend-3);cursor:pointer;transition:color .15s
+}
+.tab:hover{color:var(--legend-2)}
+.tab[aria-selected="true"]{color:var(--legend);background:var(--panel);border-color:var(--brass)}
+.client{display:none;border-top:1px solid var(--brass);padding:26px 28px;background:
+  repeating-linear-gradient(0deg,transparent 0 31px,rgba(201,169,97,.03) 31px 32px)}
+.client.on{display:block}
 
-  /* ============ DEVICE FRAME ============ */
-  .device{max-width:540px;margin:0 auto;background:var(--ink2);border:1px solid var(--hair);
-          border-radius:22px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.55)}
-  .device.wide{max-width:1240px}
-  .statusbar{display:flex;justify-content:space-between;align-items:center;padding:10px 18px;
-             font-family:"JetBrains Mono";font-size:10px;letter-spacing:.06em;color:var(--dim);
-             background:var(--panel);border-bottom:1px solid var(--hair)}
-  .dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;vertical-align:1px}
-  .dot.g{background:var(--phos);box-shadow:0 0 8px var(--phos-dim);animation:pulse 2s infinite}
-  .dot.b{background:var(--cyan)} .dot.a{background:var(--amber)} .dot.r{background:var(--red)}
-  @keyframes pulse{50%{opacity:.5}}
-  .screen{display:none;padding:20px;min-height:520px;position:relative}
-  .screen.active{display:block;animation:fade .22s}
-  .screen h2{font-family:"Space Grotesk";font-size:17px;font-weight:700;margin-bottom:14px;letter-spacing:.01em}
-  .eyebrow{font-family:"JetBrains Mono";font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
-           color:var(--faint);margin-bottom:6px}
+/* ── device ──────────────────────────────────────────── */
+.device{max-width:544px;margin:0 auto;background:var(--shell);
+  border:1px solid var(--brass);border-radius:var(--r);
+  box-shadow:0 0 0 1px var(--engrave),0 30px 70px rgba(0,0,0,.6);position:relative;overflow:hidden}
+.device.wide{max-width:1280px}
+.bar{display:flex;justify-content:space-between;align-items:center;
+  padding:9px 14px;background:var(--panel);border-bottom:1px solid var(--brass);
+  font-family:"IBM Plex Mono";font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--legend-2)}
+.lamp{width:7px;height:7px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 7px rgba(74,222,128,.6);display:inline-block;margin-right:7px;vertical-align:middle;
+  animation:lamp 2.6s infinite}
+@keyframes lamp{50%{opacity:.45}}
+.pane{display:none;padding:18px;min-height:560px}
+.pane.on{display:block}
+h2{font-family:"Archivo";font-size:17px;font-weight:700;letter-spacing:.02em}
+.engrave{font-family:"IBM Plex Mono";font-size:9px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--legend-3);margin-bottom:5px}
 
-  /* ============ GLASS ALERT ============ */
-  .alert{position:relative;background:linear-gradient(135deg,rgba(199,51,51,.28),rgba(20,30,54,.55));
-         backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-         border:1px solid rgba(255,90,90,.45);border-radius:16px;padding:16px;margin-bottom:18px;
-         box-shadow:0 8px 32px rgba(199,51,51,.25), inset 0 1px 0 rgba(255,255,255,.06)}
-  .alert .ttl{font-family:"Space Grotesk";color:#FF8585;font-weight:700;font-size:14.5px;
-              display:flex;align-items:center;gap:8px;margin-bottom:8px}
-  .alert .ttl .live{width:8px;height:8px;border-radius:50%;background:var(--red);
-                    box-shadow:0 0 10px var(--red);animation:pulse 1s infinite}
-  .alert p{font-size:12px;color:#D8DEE9;line-height:1.5;margin-bottom:12px}
-  .alert p b{color:#fff}
-  .btnrow{display:flex;gap:8px;flex-wrap:wrap}
-  button{font-family:Inter;font-weight:600;font-size:12.5px;color:var(--txt);cursor:pointer;
-         background:var(--panel2);border:1px solid var(--hair2);border-radius:10px;
-         padding:9px 16px;transition:all .15s}
-  button:hover{border-color:var(--cyan);transform:translateY(-1px)}
-  button:active{transform:none}
-  button.primary{background:var(--cyan);border-color:var(--cyan);color:#04121F}
-  button.primary:hover{box-shadow:0 4px 18px rgba(92,200,255,.4)}
-  button.phos{background:var(--phos);border-color:var(--phos);color:#04140C}
-  button.phos:hover{box-shadow:0 4px 18px rgba(52,245,165,.4)}
-  button.ok{border-color:rgba(52,245,165,.5);color:var(--phos)}
-  button.danger{border-color:rgba(255,90,90,.5);color:var(--red)}
-  button.danger:hover{background:rgba(255,90,90,.08)}
+/* ── annunciator (the one loud thing) ────────────────── */
+.annunciator{
+  border:1px solid var(--red);background:linear-gradient(180deg,rgba(255,77,77,.16),rgba(90,23,20,.28));
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.5),0 0 22px rgba(255,77,77,.13);
+  padding:14px 15px;margin-bottom:16px;border-radius:var(--r)
+}
+.annunciator .lamp-line{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+.annunciator .beacon{width:9px;height:9px;background:var(--red);box-shadow:0 0 10px var(--red);animation:lamp 1s infinite}
+.annunciator h3{font-family:"Archivo";font-size:15px;font-weight:700;color:#FF8080;letter-spacing:.01em}
+.annunciator p{font-size:12px;line-height:1.55;color:var(--legend);margin-bottom:11px}
+.annunciator p b{color:#fff}
+.note{font-size:10.5px;color:var(--legend-3);line-height:1.55;margin-top:11px}
 
-  /* ============ HERO VITAL ============ */
-  .hero-vital{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
-  .hero-big{background:linear-gradient(160deg,rgba(199,51,51,.16),var(--panel));
-            border:1px solid rgba(255,90,90,.4);border-radius:18px;padding:18px 20px;position:relative;overflow:hidden}
-  .hero-big .k{font-family:"JetBrains Mono";font-size:10px;letter-spacing:.12em;color:#FF9B9B;text-transform:uppercase}
-  .hero-big .v{font-family:"JetBrains Mono";font-weight:700;font-size:64px;line-height:1;color:#FF6B6B;
-               text-shadow:0 0 30px rgba(255,90,90,.4);margin:6px 0 2px}
-  .hero-big .u{font-family:"JetBrains Mono";font-size:12px;color:#FF9B9B}
-  .hero-big .trend{font-family:"JetBrains Mono";font-size:11px;color:var(--dim);margin-top:8px}
-  .hero-rail{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .vital{background:var(--panel);border:1px solid var(--hair);border-radius:14px;padding:10px 12px;
-         transition:border-color .15s}
-  .vital:hover{border-color:var(--hair2)}
-  .vital .k{font-family:"JetBrains Mono";font-size:9px;letter-spacing:.1em;color:var(--faint);text-transform:uppercase}
-  .vital .v{font-family:"JetBrains Mono";font-weight:700;font-size:21px;margin:2px 0 0;font-variant-numeric:tabular-nums}
-  .vital .s{font-family:"JetBrains Mono";font-size:9px;color:var(--faint)}
-  .vital.warn{border-color:rgba(255,178,36,.45)} .vital.warn .v{color:var(--amber)}
-  .vital.bad{border-color:rgba(255,90,90,.5)} .vital.bad .v{color:var(--red)}
+/* ── buttons: physical toggles ───────────────────────── */
+button{
+  font-family:"IBM Plex Sans";font-weight:600;font-size:12.5px;color:var(--legend);
+  background:linear-gradient(180deg,var(--panel-2),var(--panel));
+  border:1px solid var(--brass);border-radius:var(--r);
+  padding:11px 15px;min-height:var(--tap);cursor:pointer;transition:.13s;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.045)
+}
+button:hover{border-color:var(--amber);color:#fff}
+button:active{transform:translateY(1px);box-shadow:inset 0 2px 4px rgba(0,0,0,.5)}
+button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+button.go{background:linear-gradient(180deg,#F5A524,#C07F10);border-color:#F5A524;color:#1A1204}
+button.go:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 0 18px rgba(245,165,36,.35)}
+button.sign{border-color:rgba(74,222,128,.55);color:var(--green)}
+button.stop{border-color:var(--red);color:var(--red)}
+button.flat{background:transparent}
+/* a destractor action must be the quietest control on screen */
+button.ghost{background:transparent;border-color:transparent;color:var(--legend-3);
+  box-shadow:none;padding:11px 10px}
+button.ghost:hover{color:var(--legend-2);border-color:transparent}
+.row-btns{display:flex;gap:7px;flex-wrap:wrap}
 
-  /* ============ ECG ============ */
-  .ecg{background:#05090F;border:1px solid var(--hair);border-radius:16px;padding:8px 8px 4px;margin-bottom:16px}
-  .ecg .lab{font-family:"JetBrains Mono";font-size:9px;color:var(--faint);letter-spacing:.1em;padding:2px 6px 0}
-  .ecg canvas{display:block;width:100%;height:96px}
+/* ── RANGE RAIL — the signature ──────────────────────── */
+.readout{background:var(--panel);border:1px solid var(--brass);border-radius:var(--r);margin-bottom:14px}
+.readout .head{display:flex;justify-content:space-between;align-items:baseline;
+  padding:11px 14px 8px}
+.readout .k{font-family:"IBM Plex Mono";font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--legend-2)}
+.readout .n{font-family:"IBM Plex Mono";font-weight:600;font-size:46px;line-height:.92;letter-spacing:-.02em;
+  display:inline-block;vertical-align:baseline}
+.readout .u{font-family:"IBM Plex Mono";font-size:12px;color:var(--legend-2);margin-left:5px;
+  display:inline-block;vertical-align:baseline;transform:translateY(-1px)}
+.readout .trend{font-family:"IBM Plex Mono";font-size:10px;color:var(--legend-2);padding:0 14px 10px}
+/* critical state of the readout itself (was a dead selector) */
+.readout.crit .n{color:var(--red);text-shadow:0 0 26px rgba(255,77,77,.35)}
+.readout.crit{border-color:rgba(255,77,77,.55)}
+.readout.warn .n{color:var(--amber)}
+.rail{position:relative;height:26px;margin:0 14px 11px}
+.rail .track{position:absolute;inset:8px 0 auto;height:10px;background:var(--engrave);
+  border-top:1px solid rgba(0,0,0,.7);box-shadow:inset 0 1px 3px rgba(0,0,0,.8)}
+/* engraved safe-band recess — recessed, not highlighted */
+.rail .safe{position:absolute;top:8px;height:10px;
+  background:repeating-linear-gradient(90deg,rgba(74,222,128,.13) 0 3px,rgba(74,222,128,.05) 3px 6px);
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.6);
+  border-left:1px solid rgba(74,222,128,.35);border-right:1px solid rgba(74,222,128,.35)}
+.rail .ticks{position:absolute;inset:auto 0 0;height:8px;
+  background:repeating-linear-gradient(90deg,rgba(201,169,97,.4) 0 1px,transparent 1px 12.5%)}
+.rail .marker{position:absolute;top:2px;width:3px;height:22px;background:var(--legend);
+  box-shadow:0 0 8px rgba(239,231,220,.55)}
+.rail.crit .marker{background:var(--red);box-shadow:0 0 12px rgba(255,77,77,.85)}
+.rail.warn .marker{background:var(--amber);box-shadow:0 0 12px rgba(245,165,36,.8)}
+.rail.crit .n{color:var(--red)}
+.rail.warn .n{color:var(--amber)}
+.scale{display:flex;justify-content:space-between;font-family:"IBM Plex Mono";
+  font-size:8.5px;color:var(--legend-3);padding:0 14px 10px;letter-spacing:.06em}
+/* end-labels: makes the marker's position interpretable as a value */
+.ends{display:flex;justify-content:space-between;font-family:"IBM Plex Mono";
+  font-size:9px;color:var(--legend-2);padding:2px 14px 0;letter-spacing:.05em}
 
-  /* ============ CARDS / ROWS ============ */
-  .card{background:var(--panel);border:1px solid var(--hair);border-radius:16px;padding:14px 16px;margin-bottom:12px}
-  .card .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
-             font-size:12.5px;padding:5px 0}
-  .card .row+.row{border-top:1px solid var(--hair)}
-  .card .row span:first-child{color:var(--dim);font-size:11.5px}
-  .card .row b{font-weight:600;text-align:right}
-  .mval{font-family:"JetBrains Mono";font-weight:600;font-variant-numeric:tabular-nums}
-  .pill{font-family:"JetBrains Mono";font-size:9px;letter-spacing:.06em;border-radius:99px;
-        padding:3px 9px;border:1px solid;text-transform:uppercase}
-  .pill.g{color:var(--phos);border-color:rgba(52,245,165,.5)}
-  .pill.r{color:var(--red);border-color:rgba(255,90,90,.5)}
-  .pill.a{color:var(--amber);border-color:rgba(255,178,36,.5)}
-  .pill.c{color:var(--cyan);border-color:rgba(92,200,255,.5)}
-  .note{font-size:11px;color:var(--faint);line-height:1.55;margin-top:12px}
+/* stacked mini readouts — 2x2 faceplate grid, no redundant rails */
+.stack{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.mini{background:var(--panel);border:1px solid var(--brass);border-radius:var(--r);
+  padding:9px 11px;display:grid;grid-template-columns:1fr auto;gap:1px 8px;align-items:baseline}
+.mini .k{font-family:"IBM Plex Mono";font-size:8.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--legend-2)}
+.mini .v{font-family:"IBM Plex Mono";font-weight:600;font-size:19px;grid-row:2}
+.mini .s{font-family:"IBM Plex Mono";font-size:9px;color:var(--legend-3);text-align:right}
+.mini.warn{border-color:rgba(245,165,36,.5)} .mini.warn .v{color:var(--amber)}
+.mini.crit{border-color:var(--red)} .mini.crit .v{color:var(--red)}
 
-  /* ============ ROUTE ============ */
-  .rank{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--hair);
-        border-radius:16px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:all .15s}
-  .rank:hover{border-color:rgba(52,245,165,.4);transform:translateX(3px)}
-  .rank.selected{border-color:var(--phos);box-shadow:0 0 0 1px var(--phos),0 6px 24px rgba(52,245,165,.12)}
-  .rank .pos{font-family:"Space Grotesk";font-size:22px;font-weight:700;color:var(--faint);width:24px}
-  .rank.selected .pos{color:var(--phos)}
-  .rank .nm{font-family:"Space Grotesk";font-weight:600;font-size:14px}
-  .rank .meta{font-family:"JetBrains Mono";font-size:9.5px;color:var(--dim);margin-top:3px;letter-spacing:.02em}
-  .rank .meta .yes{color:var(--phos)} .rank .meta .no{color:var(--amber)}
-  .rank .score{margin-left:auto;text-align:center}
-  .rank .score .n{font-family:"JetBrains Mono";font-weight:700;font-size:22px;color:var(--phos)}
-  .rank .score .l{font-family:"JetBrains Mono";font-size:8px;color:var(--faint);letter-spacing:.1em}
-  .rank.gated{opacity:.5;cursor:not-allowed;border-style:dashed}
-  .rank.gated:hover{transform:none;border-color:var(--hair)}
-  .rank.gated .n{color:var(--red)}
-  .gatebox{background:linear-gradient(135deg,rgba(255,90,90,.1),transparent);
-           border:1px dashed rgba(255,90,90,.4);border-radius:14px;padding:12px 16px;margin-top:14px}
-  .gatebox .t{font-family:"JetBrains Mono";font-size:10px;letter-spacing:.12em;color:var(--red);
-              text-transform:uppercase;margin-bottom:4px}
-  .gatebox p{font-size:11.5px;color:var(--dim);line-height:1.5}
+/* ── trace ───────────────────────────────────────────── */
+.trace{background:var(--engrave);border:1px solid var(--brass);border-radius:var(--r);
+  padding:7px 8px 2px;margin-bottom:14px}
+.trace .lbl{font-family:"IBM Plex Mono";font-size:9px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--legend-3);display:flex;justify-content:space-between;padding:1px 3px}
+.trace canvas{display:block;width:100%;height:92px}
 
-  /* ============ QR ============ */
-  .qrwrap{display:flex;flex-direction:column;align-items:center;padding:18px 0 8px}
-  .qr{width:196px;height:196px;background:#fff;border-radius:18px;display:grid;place-items:center;
-      box-shadow:0 0 0 1px var(--hair2),0 12px 40px rgba(0,0,0,.5),0 0 60px rgba(52,245,165,.08)}
-  .qrtxt{text-align:center;margin-top:12px}
-  .qrtxt .a{font-family:"JetBrains Mono";font-size:10px;color:var(--amber);letter-spacing:.08em}
-  .qrtxt .b{font-size:11.5px;color:var(--dim);margin-top:4px}
+/* ── data card ───────────────────────────────────────── */
+.card{background:var(--panel);border:1px solid var(--brass);border-radius:var(--r);margin-bottom:10px}
+.card .r{display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+  padding:8px 13px;font-size:12px}
+.card .r+.r{border-top:1px solid rgba(201,169,97,.18)}
+.card .r .k{color:var(--legend-2);font-size:11px}
+.chip{font-family:"IBM Plex Mono";font-size:9px;letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 8px;border:1px solid currentColor;border-radius:var(--r);color:var(--legend-2)}
+.chip.ok{color:var(--green)} .chip.warn{color:var(--amber)} .chip.crit{color:var(--red)} .chip.info{color:var(--cyan)}
 
-  /* ============ NAV ============ */
-  .navbar{display:flex;background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-          border-top:1px solid var(--hair)}
-  .navbar button{flex:1;background:none;border:none;border-radius:0;padding:13px 4px 12px;
-                 font-family:"JetBrains Mono";font-size:9px;letter-spacing:.06em;text-transform:uppercase;
-                 color:var(--faint)}
-  .navbar button:hover{transform:none;color:var(--dim)}
-  .navbar button.active{color:var(--phos);box-shadow:inset 0 2px 0 var(--phos)}
+/* ── destination ranking ─────────────────────────────── */
+.dest{display:flex;align-items:center;gap:12px;background:var(--panel);
+  border:1px solid var(--brass);border-radius:var(--r);padding:13px;margin-bottom:7px;cursor:pointer;transition:.13s}
+.dest:hover{border-color:var(--amber);transform:translateX(3px)}
+.dest[aria-selected="true"]{border-color:var(--green);background:#182019;
+  box-shadow:inset 3px 0 0 var(--green)}
+.dest .p{font-family:"Archivo";font-weight:700;font-size:19px;color:var(--legend-3);width:22px}
+.dest[aria-selected="true"] .p{color:var(--green)}
+.dest .nm{font-family:"Archivo";font-weight:600;font-size:13.5px}
+.dest .mt{font-family:"IBM Plex Mono";font-size:9px;color:var(--legend-2);margin-top:3px;letter-spacing:.03em}
+.dest .mt b{color:var(--green);font-weight:500}
+.dest .mt i{color:var(--amber);font-style:normal}
+.dest .sc{font-family:"IBM Plex Mono";font-weight:600;font-size:20px;color:var(--green);text-align:right}
+.dest .sc small{display:block;font-size:7.5px;letter-spacing:.14em;color:var(--legend-3)}
+.dest.blocked{opacity:.55;cursor:not-allowed;border-style:dashed}
+.dest.blocked:hover{transform:none;border-color:var(--brass)}
+.dest.blocked .sc{color:var(--red)}
 
-  /* ============ DISPATCH ============ */
-  .triptych{display:grid;grid-template-columns:300px 1fr 360px;gap:14px;padding:18px}
-  @media(max-width:1100px){.triptych{grid-template-columns:1fr}}
-  .pane h3{font-family:"JetBrains Mono";font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
-           color:var(--faint);margin-bottom:10px}
-  .incident{background:var(--panel);border:1px solid var(--hair);border-left:3px solid var(--faint);
-            border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer;transition:all .15s}
-  .incident:hover{border-color:var(--hair2);border-left-color:var(--cyan)}
-  .incident.crit{border-left-color:var(--red)}
-  .incident.warn2{border-left-color:var(--amber)}
-  .incident .id{font-family:"JetBrains Mono";font-weight:700;font-size:12px}
-  .incident .w{font-size:11px;color:var(--dim);margin-top:2px}
-  .incident .t{font-family:"JetBrains Mono";font-size:9px;color:var(--faint);margin-top:3px}
-  .incident .al{font-family:"JetBrains Mono";font-size:9.5px;color:var(--red);margin-top:4px}
-  .mapbox{height:250px;border:1px solid var(--hair);border-radius:16px;position:relative;overflow:hidden;
-          background:#070D18}
-  .mapbox svg{position:absolute;inset:0}
-  .pin{position:absolute;width:11px;height:11px;border-radius:50%;transform:translate(-50%,-50%)}
-  .pin::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:1px solid currentColor;
-              opacity:.5;animation:ring 2.4s infinite}
-  @keyframes ring{from{transform:scale(.5);opacity:.7}to{transform:scale(1.6);opacity:0}}
-  .pin span{position:absolute;top:16px;left:50%;transform:translateX(-50%);
-            font-family:"JetBrains Mono";font-size:8.5px;color:var(--dim);white-space:nowrap}
-  .pin.hosp{border-radius:3px}
-  table{width:100%;border-collapse:collapse}
-  th{font-family:"JetBrains Mono";font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);
-     text-align:left;padding:8px 10px;border-bottom:1px solid var(--hair2)}
-  td{font-size:12px;padding:9px 10px;border-bottom:1px solid var(--hair)}
-  td.m{font-family:"JetBrains Mono";font-variant-numeric:tabular-nums}
-  tr.gated td{opacity:.45}
-  .scorecell{font-family:"JetBrains Mono";font-weight:700;font-size:15px;color:var(--phos)}
+/* ── nav ─────────────────────────────────────────────── */
+.nav{display:flex;background:var(--panel);border-top:1px solid var(--brass)}
+.nav button{flex:1;background:transparent;border:none;border-radius:0;box-shadow:none;
+  padding:12px 2px 11px;font-family:"IBM Plex Mono";font-size:8.5px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--legend-3);min-height:52px}
+.nav button:hover{color:var(--legend-2);border-color:transparent}
+.nav button[aria-selected="true"]{color:var(--amber);box-shadow:inset 0 2px 0 var(--amber)}
+.nav button b{display:block;font-size:15px;font-weight:400;margin-bottom:3px}
 
-  /* ============ HOSPITAL ============ */
-  .verifyline{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-  .verifyline .sig{font-family:"JetBrains Mono";font-size:10px;color:var(--phos);letter-spacing:.06em}
-  .bigaccept{display:block;width:100%;padding:14px;font-size:14px;border-radius:14px;margin-bottom:10px}
-  .qsmall{display:flex;gap:10px}
-  .qsmall button{flex:1}
-  .scanzone{border:1.5px dashed var(--hair2);border-radius:18px;padding:44px;text-align:center;margin-bottom:14px}
-  .scanzone .glyph{font-size:42px;color:var(--cyan);text-shadow:0 0 30px rgba(92,200,255,.5)}
-  .scanzone p{font-size:12px;color:var(--dim);margin:10px 0 16px;line-height:1.5}
-  .accepted-hero{background:linear-gradient(160deg,rgba(52,245,165,.12),var(--panel));
-                 border:1px solid rgba(52,245,165,.4);border-radius:18px;padding:24px;text-align:center;margin-bottom:14px}
-  .accepted-hero .big{font-family:"Space Grotesk";font-size:22px;font-weight:700;color:var(--phos)}
-  .accepted-hero .sub{font-family:"JetBrains Mono";font-size:10px;color:var(--dim);margin-top:6px;letter-spacing:.08em}
+/* ── QR ──────────────────────────────────────────────── */
+.qrwrap{text-align:center;padding:16px 0 6px}
+.qr{width:192px;height:192px;margin:0 auto 13px;background:#EFE7DC;padding:9px;border-radius:var(--r);
+  box-shadow:0 0 0 1px var(--brass),0 0 34px rgba(245,165,36,.10)}
+.qr svg{display:block;width:100%;height:100%}
 
-  .scrollhint{max-height:560px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--panel2) transparent}
-  .scrollhint::-webkit-scrollbar{width:6px}
-  .scrollhint::-webkit-scrollbar-thumb{background:var(--panel2);border-radius:3px}
+/* ── CPR annunciator overlay ─────────────────────────── */
+.cpr{position:absolute;inset:0;z-index:60;display:none;flex-direction:column;
+  background:linear-gradient(180deg,#1A1613,#0D0B0A);
+  padding:18px;animation:fade .2s}
+.cpr.on{display:flex}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.cpr .clock{font-family:"IBM Plex Mono";font-weight:600;font-size:52px;color:var(--red);
+  text-shadow:0 0 34px rgba(255,77,77,.45);letter-spacing:-.02em}
+.cadence{display:flex;align-items:center;gap:11px}
+.cadence .beat{width:24px;height:24px;border-radius:50%;background:var(--red);
+  box-shadow:0 0 22px rgba(255,77,77,.7)}
+.step{display:flex;align-items:center;gap:11px;background:var(--panel);
+  border:1px solid var(--brass);border-left:3px solid var(--amber);border-radius:var(--r);
+  padding:10px 12px;margin-bottom:6px;font-size:12.5px}
+.step .no{font-family:"IBM Plex Mono";font-weight:600;font-size:13px;color:var(--amber)}
+.step .sp{margin-left:auto}
 
-  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* ── dispatch triptych ───────────────────────────────── */
+.tri{display:grid;grid-template-columns:296px 1fr 372px;gap:13px;padding:16px}
+@media(max-width:1120px){.tri{grid-template-columns:1fr}}
+.col h4{font-family:"IBM Plex Mono";font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--legend-3);margin-bottom:9px}
+.inc{background:var(--panel);border:1px solid var(--brass);border-left:3px solid var(--legend-3);
+  border-radius:var(--r);padding:9px 11px;margin-bottom:6px;cursor:pointer;transition:.13s}
+.inc:hover{border-left-color:var(--amber)}
+.inc.p1{border-left-color:var(--red)}
+.inc.p2{border-left-color:var(--amber)}
+.inc .id{font-family:"IBM Plex Mono";font-weight:600;font-size:11.5px;display:flex;justify-content:space-between}
+.inc .w{font-size:11px;color:var(--legend-2);margin-top:2px}
+.inc .m{font-family:"IBM Plex Mono";font-size:8.5px;color:var(--legend-3);margin-top:3px}
+.inc .al{font-family:"IBM Plex Mono";font-size:9px;color:var(--red);margin-top:4px}
+.map{height:252px;background:var(--engrave);border:1px solid var(--brass);
+  border-radius:var(--r);position:relative;overflow:hidden}
+.map svg{position:absolute;inset:0}
+.pin{position:absolute;width:11px;height:11px;border-radius:50%;transform:translate(-50%,-50%)}
+.pin::before{content:"";position:absolute;inset:-5px;border:1px solid currentColor;border-radius:50%;
+  animation:ring 2.6s infinite}
+@keyframes ring{from{transform:scale(.5);opacity:.75}to{transform:scale(1.7);opacity:0}}
+.pin span{position:absolute;top:15px;left:50%;transform:translateX(-50%);
+  font-family:"IBM Plex Mono";font-size:8px;color:var(--legend-2);white-space:nowrap}
+.pin.h{background:transparent;border:2px solid var(--legend);border-radius:0}
+table{width:100%;border-collapse:collapse}
+th{font-family:"IBM Plex Mono";font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--legend-3);text-align:left;padding:7px 9px;border-bottom:1px solid rgba(201,169,97,.35)}
+td{font-size:12px;padding:8px 9px;border-bottom:1px solid rgba(201,169,97,.15)}
+td.n{font-family:"IBM Plex Mono);font-variant-numeric:tabular-nums}
+tr.off td{opacity:.45}
+td.score{font-family:"IBM Plex Mono";font-weight:600;font-size:15px;color:var(--green)}
+
+/* ── hospital ────────────────────────────────────────── */
+.seal{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.seal .sig{font-family:"IBM Plex Mono";font-size:9.5px;letter-spacing:.1em;color:var(--green)}
+.scan{border:1px dashed rgba(201,169,97,.5);border-radius:var(--r);padding:40px 18px;text-align:center}
+.scan .g{font-size:38px;color:var(--cyan)}
+.done-hero{background:linear-gradient(160deg,rgba(74,222,128,.13),var(--panel));
+  border:1px solid var(--green);border-radius:var(--r);padding:22px;text-align:center;margin-bottom:12px}
+.done-hero .b{font-family:"Archivo";font-size:20px;font-weight:700;color:var(--green)}
+.done-hero .s{font-family:"IBM Plex Mono";font-size:9.5px;color:var(--legend-2);margin-top:6px;letter-spacing:.09em}
+
+.scroll{max-height:600px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--panel-2) var(--engrave)}
+.scroll::-webkit-scrollbar{width:7px}
+.scroll::-webkit-scrollbar-thumb{background:var(--panel-2)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 
 <header>
-  <h1>Ghana <em>EMS</em></h1>
-  <span class="tag">thin clients · v2</span>
-  <span class="tag">clinical instrument design language</span>
-  <span class="tag" style="color:var(--faint)">prototype — fake data</span>
+  <h1>Ghana <em>EMS</em> <span style="font-size:11px;color:var(--legend-3);letter-spacing:.16em">thin clients</span></h1>
+  <span class="tag">v3 · instrument faceplate</span>
+  <span class="tag">prototype · synthetic data</span>
+  <span class="tag">AI output is advisory — signed protocol governs</span>
 </header>
 
-<div class="tabs">
-  <div class="tab active" data-client="paramedic">Paramedic · Node B</div>
-  <div class="tab" data-client="dispatch">Dispatch</div>
-  <div class="tab" data-client="hospital">Hospital ED</div>
+<div class="tabs" role="tablist">
+  <div class="tab" role="tab" aria-selected="true"  data-c="crew">🚑 Crew · Node B</div>
+  <div class="tab" role="tab" aria-selected="false" data-c="ops">🖥 Dispatch</div>
+  <div class="tab" role="tab" aria-selected="false" data-c="ed">🏥 Hospital ED</div>
 </div>
 
-<!-- ==================== PARAMEDIC ==================== -->
-<div class="client active" id="client-paramedic">
-  <div class="device">
-    <div class="statusbar">
-      <span><span class="dot g"></span>NODE-07</span>
-      <span>MESH 3 HOPS · LORA 11 KM</span>
-      <span class="clock">14:22</span>
+<!-- ══════════════ CREW ══════════════ -->
+<div class="client on" id="c-crew">
+ <div class="device">
+  <div class="bar">
+    <span><span class="lamp"></span>NODE-07 · REC</span>
+    <span>MESH 3 HOPS · LORA 11 KM</span>
+    <span class="clk">14:22</span>
+  </div>
+  <div class="scroll">
+
+  <!-- call -->
+  <div class="pane" data-p="call">
+    <div class="engrave">incoming · priority 1</div>
+    <h2>INC-0421 — Road traffic collision</h2>
+    <div class="card">
+      <div class="r"><span class="k">Casualties</span><b>2 — one trapped</b></div>
+      <div class="r"><span class="k">Location</span><b class="mono">N1 HWY · MILE 7 JCT</b></div>
+      <div class="r"><span class="k">Drive time</span><b class="mono">4.1 KM · ~9 MIN</b></div>
+      <div class="r"><span class="k">Control</span><b>Accra Control — A. Mensah</b></div>
     </div>
-    <div class="scrollhint">
-
-    <!-- NEW CALL -->
-    <div class="screen" data-screen="newcall">
-      <div class="eyebrow">incoming · priority 1</div>
-      <h2>INC-0421 — Road traffic collision</h2>
-      <div class="card">
-        <div class="row"><span>Casualties</span><b>2 — one trapped</b></div>
-        <div class="row"><span>Location</span><b class="mval">N1 HWY · MILE 7 JCT</b></div>
-        <div class="row"><span>Distance</span><b class="mval">4.1 KM · ~9 MIN</b></div>
-        <div class="row"><span>Dispatcher</span><b>Accra Control — A. Mensah</b></div>
-      </div>
-      <div class="card">
-        <div class="row"><span>Pre-route engine</span><span class="pill g">shortlist ready</span></div>
-        <div class="row"><span>Basis</span><span style="font-size:11px;color:var(--dim)">refreshes as hospital status arrives over mesh</span></div>
-      </div>
-      <div class="btnrow">
-        <button class="phos" data-go="vitals">Accept &amp; navigate</button>
-        <button class="danger">Decline — logged</button>
-      </div>
+    <div class="card">
+      <div class="r"><span class="k">Pre-route engine</span><span class="chip ok">shortlist ready</span></div>
+      <div class="r"><span class="k">Basis</span><b style="font-size:11px;color:var(--legend-2)">refreshes as hospital status arrives over mesh</b></div>
     </div>
-
-    <!-- VITALS -->
-    <div class="screen active" data-screen="vitals">
-      <div class="alert" id="crit-alert">
-        <div class="ttl"><span class="live"></span>CRITICAL — SpO₂ 82% · falling 4 min</div>
-        <p><b>Protocol 4.2</b> (signed v7 · NAS-MD +4) — escalate: O₂ via BVM 15 L.
-           Sepsis risk <b class="mval">0.81</b> · rhythm <b class="mval">VT — shockable</b>.</p>
-        <div class="btnrow">
-          <button class="ok" onclick="document.getElementById('crit-alert').style.display='none'">Acknowledge</button>
-          <button class="primary" data-go="log">Treat now</button>
-          <button>False alarm</button>
-        </div>
-      </div>
-
-      <div class="hero-vital">
-        <div class="hero-big">
-          <div class="k">SpO₂ — worst parameter</div>
-          <div class="v">82<span class="u">%</span></div>
-          <div class="trend">▼ 96 → 82 over 30 min</div>
-        </div>
-        <div class="hero-rail">
-          <div class="vital warn"><div class="k">HR</div><div class="v">128</div><div class="s">bpm ▲</div></div>
-          <div class="vital bad"><div class="k">NIBP</div><div class="v" style="font-size:17px">88/54</div><div class="s">mmHg ▼</div></div>
-          <div class="vital warn"><div class="k">RR</div><div class="v">32</div><div class="s">/min ▲</div></div>
-          <div class="vital warn"><div class="k">GCS</div><div class="v">13</div><div class="s">▼ 2 in 20m</div></div>
-        </div>
-      </div>
-
-      <div class="ecg">
-        <div class="lab">LEAD II · 250 HZ · NODE A TAP · <span style="color:var(--red)">VT</span></div>
-        <canvas id="ecg-canvas"></canvas>
-      </div>
-
-      <div class="card">
-        <div class="row"><span>Secondary</span><b class="mval" style="font-size:11.5px">TEMP 38.9°C · EtCO₂ 29 · MAP 65 ▼</b></div>
-        <div class="row"><span>Record</span><span class="pill g">signed · chained · 2 peers</span></div>
-        <div class="row"><span>Artefacts</span><span style="font-size:11px;color:var(--dim)">2 quarantined (motion) — excluded</span></div>
-        <div class="row"><span>Lineage</span><span class="mval" style="font-size:10.5px;color:var(--amber)">⚠ TELEMETRY GAP 34S @ 14:03 — SEQ 881→918</span></div>
-      </div>
-      <div class="eyebrow">quick log — one tap</div>
-      <div class="btnrow" style="margin-bottom:10px">
-        <button class="ok" onclick="quickLog('O₂ 15 L via NRB')">O₂ 15L NRB</button>
-        <button onclick="quickLog('ASA 300 mg PO')">ASA 300mg</button>
-        <button onclick="quickLog('IV bolus 250 mL')">IV bolus 250ml</button>
-        <button class="danger" onclick="openCpr()">⚡ CPR mode</button>
-      </div>
-      <div class="card" id="quicklog-card" style="display:none;padding:10px 16px">
-        <div id="quicklog-entries" class="mval" style="font-size:10.5px;color:var(--dim);line-height:1.7"></div>
-      </div>
-      <div class="note">Node A keeps recording if this tablet dies. Field vitals are the authority — the hospital appends, never overwrites.</div>
-    </div>
-
-    <!-- LOG -->
-    <div class="screen" data-screen="log">
-      <div class="eyebrow">intervention</div>
-      <h2>Log treatment</h2>
-      <div class="card">
-        <div class="row"><span>Drug</span><b>Adrenaline 1 mg/mL</b></div>
-        <div class="row"><span>Weight</span><b class="mval">70 KG (EST)</b></div>
-        <div class="row"><span>Protocol dose</span><b class="mval" style="color:var(--phos)">1 MG IV ✓</b></div>
-        <div class="row"><span>Max-dose check</span><span class="pill g">within limit</span></div>
-        <div class="row"><span>Contraindications</span><span class="pill g">none matched</span></div>
-      </div>
-      <div class="card">
-        <div class="row"><span>Protocol</span><span class="mval" style="font-size:11px">4.2 V7 · 5/5 SIG</span></div>
-        <div class="row"><span>Formulary</span><span style="font-size:11px">Ghana EML 2023 · verified</span></div>
-      </div>
-      <div class="btnrow">
-        <button class="phos" data-go="vitals">Sign &amp; log</button>
-        <button data-go="vitals">Cancel</button>
-      </div>
-      <div class="note">Entries are hash-chained at save. No edits after — only new signed amendments.</div>
-    </div>
-
-    <!-- ROUTE -->
-    <div class="screen" data-screen="route">
-      <div class="eyebrow">destination · c-engine</div>
-      <h2>Where to <span style="color:var(--phos)">→</span></h2>
-      <div class="rank selected" data-go="handover">
-        <div class="pos">1</div>
-        <div><div class="nm">Korle Bu Teaching</div>
-          <div class="meta">3.2 KM · 8 MIN · <span class="yes">CATH ✓ CARDIO ✓</span> · 4 BEDS · QUEUE 2</div></div>
-        <div class="score"><div class="n">89</div><div class="l">SCORE</div></div>
-      </div>
-      <div class="rank" data-go="handover">
-        <div class="pos">2</div>
-        <div><div class="nm">37 Military</div>
-          <div class="meta">5.8 KM · 12 MIN · <span class="yes">CATH ✓ CARDIO ✓</span> · 2 BEDS · QUEUE 5</div></div>
-        <div class="score"><div class="n">74</div><div class="l">SCORE</div></div>
-      </div>
-      <div class="rank" data-go="handover">
-        <div class="pos">3</div>
-        <div><div class="nm">Ridge Hospital</div>
-          <div class="meta">6.1 KM · 13 MIN · CATH ✓ · <span class="no">NO CARDIO TILL 18:00</span> · 6 BEDS</div></div>
-        <div class="score"><div class="n">51</div><div class="l">SCORE</div></div>
-      </div>
-      <div class="rank gated">
-        <div class="pos">✗</div>
-        <div><div class="nm">Accra General</div>
-          <div class="meta" style="color:var(--red)">2.4 KM · PACKET NOT ACCEPTED — EXCLUDED</div></div>
-        <div class="score"><div class="n">—</div><div class="l">GATED</div></div>
-      </div>
-      <div class="gatebox">
-        <div class="t">hard gate</div>
-        <p>No accepted packet, no destination — no matter how close. Dispatch sees this list; overrides are signed.</p>
-      </div>
-    </div>
-
-    <!-- HANDOVER -->
-    <div class="screen" data-screen="handover">
-      <div class="eyebrow">handover</div>
-      <h2>INC-0421 → Korle Bu</h2>
-      <div class="card">
-        <div class="row"><span>Payload</span><span style="font-size:11px">vitals · alerts · interventions · ETA</span></div>
-        <div class="row"><span>Integrity</span><span class="pill g">sha-256 ✓ · node-07</span></div>
-      </div>
-      <div class="qrwrap">
-        <div class="qr"><svg width="168" height="168" viewBox="0 0 21 21">
-          <rect width="21" height="21" fill="#fff"/><g fill="#0A101E">
-          <rect x="0" y="0" width="7" height="7"/><rect x="1" y="1" width="5" height="5" fill="#fff"/><rect x="2" y="2" width="3" height="3"/>
-          <rect x="14" y="0" width="7" height="7"/><rect x="15" y="1" width="5" height="5" fill="#fff"/><rect x="16" y="2" width="3" height="3"/>
-          <rect x="0" y="14" width="7" height="7"/><rect x="1" y="15" width="5" height="5" fill="#fff"/><rect x="2" y="16" width="3" height="3"/>
-          <rect x="9" y="1" width="1" height="1"/><rect x="11" y="2" width="1" height="2"/><rect x="9" y="5" width="2" height="1"/>
-          <rect x="13" y="9" width="1" height="1"/><rect x="15" y="10" width="2" height="1"/><rect x="18" y="9" width="1" height="2"/>
-          <rect x="9" y="9" width="1" height="3"/><rect x="11" y="11" width="2" height="1"/><rect x="9" y="14" width="1" height="1"/>
-          <rect x="11" y="16" width="1" height="2"/><rect x="14" y="14" width="2" height="1"/><rect x="17" y="15" width="1" height="1"/>
-          <rect x="19" y="14" width="2" height="2"/><rect x="14" y="18" width="1" height="2"/><rect x="16" y="19" width="3" height="1"/>
-          <rect x="9" y="19" width="1" height="1"/><rect x="13" y="12" width="1" height="1"/><rect x="19" y="12" width="1" height="1"/>
-          </g></svg></div>
-        <div class="qrtxt">
-          <div class="a">ENCRYPTED · SINGLE-USE · EXPIRES 5:00</div>
-          <div class="b">ED clinician scans — both sides write a signed audit row</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- NODE HEALTH -->
-    <div class="screen" data-screen="health">
-      <div class="eyebrow">node health</div>
-      <h2>Node status</h2>
-      <div class="card">
-        <div class="row"><span>Node A (tap)</span><span class="pill g">recording</span></div>
-        <div class="row"><span>Monitor link</span><b class="mval" style="font-size:11px">UMEC10 · BLE · 1.2 S</b></div>
-        <div class="row"><span>AI pipeline</span><b class="mval" style="font-size:11px">240 MS · 3 MODELS</b></div>
-        <div class="row"><span>Mesh</span><b class="mval" style="font-size:11px">NODE-04 2KM · DISP 11KM</b></div>
-        <div class="row"><span>Forward queue</span><b class="mval">0</b></div>
-        <div class="row"><span>Protocols</span><span class="pill g">v7 · 5/5 sig</span></div>
-        <div class="row"><span>Case key</span><span class="pill c">active · wrapped</span></div>
-        <div class="row"><span>Power</span><b class="mval" style="font-size:11px">12 V ✓ · UPS 41 MIN</b></div>
-      </div>
-      <div class="note">Field-debug screen. Anything red here → full manual fallback still works.</div>
-    </div>
-    </div>
-
-    <div class="navbar">
-      <button data-go="newcall">Call</button>
-      <button data-go="vitals" class="active">Vitals</button>
-      <button data-go="log">Log</button>
-      <button data-go="route">Route</button>
-      <button data-go="handover">Handover</button>
-      <button data-go="health">Node</button>
-    </div>
-
-    <!-- CPR overlay -->
-    <div id="cpr-overlay" style="display:none;position:absolute;inset:0;z-index:50;background:rgba(5,9,15,.94);backdrop-filter:blur(6px);padding:22px;flex-direction:column">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start">
-        <div>
-          <div class="eyebrow" style="color:var(--red)">emergency</div>
-          <div class="disp" style="font-size:21px;font-weight:700;color:var(--red)">CARDIAC ARREST — CPR</div>
-          <div class="mono" style="font-size:9.5px;color:var(--dim);margin-top:4px;letter-spacing:.08em">PULSE ABSENT 14:11:37 · ONSET LOGGED + SIGNED</div>
-        </div>
-        <button class="danger" onclick="closeCpr()">✕ Close</button>
-      </div>
-      <div style="display:flex;align-items:center;gap:22px;margin:20px 0">
-        <div id="cpr-timer" class="mono" style="font-size:46px;font-weight:700;color:var(--red);text-shadow:0 0 30px rgba(255,90,90,.4)">00:00</div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
-          <div id="cpr-pulse" style="width:26px;height:26px;border-radius:50%;background:var(--red);box-shadow:0 0 20px rgba(255,90,90,.6)"></div>
-          <div class="mono" style="font-size:9px;color:var(--dim);letter-spacing:.1em">110/MIN</div>
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:8px">
-        <div class="card" style="margin:0;padding:11px 14px"><b class="mono" style="color:var(--phos)">1</b>&nbsp; Compressions 100–120/min · depth 5–6 cm <span class="pill g" style="float:right">NOW</span></div>
-        <div class="card" style="margin:0;padding:11px 14px"><b class="mono" style="color:var(--amber)">2</b>&nbsp; AED on · analyse rhythm <span class="pill a" style="float:right">NEXT</span></div>
-        <div class="card" style="margin:0;padding:11px 14px"><b class="mono" style="color:var(--red)">3</b>&nbsp; Shock if VT/VF · 200 J biphasic <span class="pill r" style="float:right">SHOCK</span></div>
-        <div class="card" style="margin:0;padding:11px 14px"><b class="mono" style="color:var(--amber)">4</b>&nbsp; Resume CPR 2 min · re-analyse</div>
-        <div class="card" style="margin:0;padding:11px 14px"><b class="mono" style="color:var(--phos)">5</b>&nbsp; Adrenaline 1 mg IV every 3–5 min <span class="pill c" style="float:right">AUTO-LOGGED</span></div>
-      </div>
-      <div class="note" style="margin-top:auto">Every step + timestamp writes to the signed record. Cycle 1 analysis due at 02:00.</div>
+    <div class="row-btns">
+      <button class="go" data-go="vitals">Accept &amp; navigate</button>
+      <button class="stop">Decline — logged</button>
     </div>
   </div>
+
+  <!-- vitals -->
+  <div class="pane on" data-p="vitals">
+    <div class="annunciator" id="ann" role="alert" aria-live="assertive">
+      <div class="lamp-line"><span class="beacon"></span><h3>CRITICAL — SpO₂ 82% · falling 4 min</h3></div>
+      <p><b>Protocol 4.2</b> (signed v7 · NAS-MD +4) — escalate: O₂ via BVM 15 L.
+         Sepsis risk <b class="mono">0.81</b> · rhythm <b class="mono">VT — shockable</b>.</p>
+      <div class="row-btns">
+        <button class="sign" onclick="document.getElementById('ann').style.display='none'">Acknowledge</button>
+        <button class="go" data-go="treat">Treat now</button>
+        <button class="ghost">False alarm</button>
+      </div>
+    </div>
+
+    <!-- hero readout: SpO2 on a range rail -->
+    <div class="readout crit">
+      <div class="head">
+        <span class="k">SpO₂ — worst parameter</span>
+        <span class="mono" style="font-size:10px;color:var(--legend-2)">▼ 4 /min</span>
+      </div>
+      <div style="padding:0 14px"><span class="n">82</span><span class="u">%</span></div>
+      <div class="rail crit">
+        <div class="track"></div>
+        <div class="safe" style="left:62%;width:36%"></div>
+        <div class="ticks"></div>
+        <div class="marker" style="left:57%"></div>
+      </div>
+      <div class="ends"><span>50%</span><span>100%</span></div>
+      <div class="scale"><span>SHOCK &lt;85</span><span>SAFE 95–100</span><span>SHOCK &gt;100</span></div>
+      <div class="trend">▼ 96 → 82 over 30 min · 4 min below shock floor</div>
+    </div>
+
+    <div class="stack">
+      <div class="mini warn"><span class="k">Heart rate</span><span class="s">bpm ▲6</span><span class="v">128</span></div>
+      <div class="mini crit"><span class="k">NIBP</span><span class="s">mmHg ▼6</span><span class="v">88/54</span></div>
+      <div class="mini warn"><span class="k">Resp rate</span><span class="s">/min ▲4</span><span class="v">32</span></div>
+      <div class="mini warn"><span class="k">GCS</span><span class="s">▼2 in 20 min</span><span class="v">13</span></div>
+    </div>
+
+    <div class="trace">
+      <div class="lbl"><span>LEAD II · 250 HZ · NODE A TAP</span><span style="color:var(--red)">VT</span></div>
+      <canvas id="ecg"></canvas>
+    </div>
+
+    <div class="card">
+      <div class="r"><span class="k">Secondary</span><b class="mono" style="font-size:11px">TEMP 38.9°C · EtCO₂ 29 · MAP 65 ▼</b></div>
+      <div class="r"><span class="k">Record</span><span class="chip ok">signed · chained · 2 peers</span></div>
+      <div class="r"><span class="k">Artefacts</span><b style="font-size:11px;color:var(--legend-2)">2 quarantined (motion) — excluded</b></div>
+      <div class="r"><span class="k">Lineage</span><b class="mono" style="font-size:10px;color:var(--amber)">⚠ GAP 34 S @ 14:03 · SEQ 881→918</b></div>
+    </div>
+
+    <div class="engrave">quick log — one tap</div>
+    <div class="row-btns" style="margin-bottom:9px">
+      <button class="sign" onclick="ql('O₂ 15 L via NRB')">O₂ 15L NRB</button>
+      <button onclick="ql('ASA 300 mg PO')">ASA 300mg</button>
+      <button onclick="ql('IV bolus 250 mL')">IV bolus 250ml</button>
+      <button class="stop" onclick="cprOn()">CPR mode</button>
+    </div>
+    <div class="card" id="qlcard" style="display:none">
+      <div class="r"><span class="k">Logged this case</span><span class="mono" id="qlbox" style="font-size:10px;color:var(--legend-2);text-align:right;line-height:1.7"></span></div>
+    </div>
+    <div class="note">Node A keeps recording if this tablet dies. Field vitals are the authority — the hospital appends, never overwrites.</div>
+  </div>
+
+  <!-- treat -->
+  <div class="pane" data-p="treat">
+    <div class="engrave">intervention</div>
+    <h2>Log treatment</h2>
+    <div class="card">
+      <div class="r"><span class="k">Drug</span><b>Adrenaline 1 mg/mL</b></div>
+      <div class="r"><span class="k">Weight</span><b class="mono">70 KG (EST)</b></div>
+      <div class="r"><span class="k">Protocol dose</span><b class="mono" style="color:var(--green)">1 MG IV ✓</b></div>
+      <div class="r"><span class="k">Max dose</span><span class="chip ok">within limit</span></div>
+      <div class="r"><span class="k">Contraindications</span><span class="chip ok">none matched</span></div>
+    </div>
+    <div class="card">
+      <div class="r"><span class="k">Protocol</span><b class="mono" style="font-size:11px">4.2 V7 · 5/5 SIG</b></div>
+      <div class="r"><span class="k">Formulary</span><b style="font-size:11px">Ghana EML 2023 · verified</b></div>
+    </div>
+    <div class="row-btns">
+      <button class="go" onclick="ql('Adrenaline 1 mg IV');to('vitals')">Sign &amp; log</button>
+      <button class="flat" onclick="to('vitals')">Cancel</button>
+    </div>
+    <div class="note">Entries are hash-chained at save. No edits after — only new signed amendments.</div>
+  </div>
+
+  <!-- route -->
+  <div class="pane" data-p="route">
+    <div class="engrave">destination · c-engine</div>
+    <h2>Where to take this patient</h2>
+    <div class="dest" aria-selected="true" onclick="pick(this)" data-go="qr">
+      <div class="p">1</div>
+      <div><div class="nm">Korle Bu Teaching</div>
+        <div class="mt">3.2 KM · 8 MIN · <b>CATH ✓ CARDIO ✓</b> · 4 BEDS · QUEUE 2</div></div>
+      <div class="sc">89<small>SCORE</small></div>
+    </div>
+    <div class="dest" onclick="pick(this)" data-go="qr">
+      <div class="p">2</div>
+      <div><div class="nm">37 Military</div>
+        <div class="mt">5.8 KM · 12 MIN · <b>CATH ✓ CARDIO ✓</b> · 2 BEDS · QUEUE 5</div></div>
+      <div class="sc">74<small>SCORE</small></div>
+    </div>
+    <div class="dest" onclick="pick(this)" data-go="qr">
+      <div class="p">3</div>
+      <div><div class="nm">Ridge Hospital</div>
+        <div class="mt">6.1 KM · 13 MIN · CATH ✓ · <i>NO CARDIO TILL 18:00</i> · 6 BEDS</div></div>
+      <div class="sc">51<small>SCORE</small></div>
+    </div>
+    <div class="dest blocked" aria-disabled="true">
+      <div class="p">✗</div>
+      <div><div class="nm">Accra General</div>
+        <div class="mt" style="color:var(--red)">2.4 KM · PACKET NOT ACCEPTED — EXCLUDED</div></div>
+      <div class="sc">—<small>GATED</small></div>
+    </div>
+    <div class="annunciator" style="border-color:rgba(201,169,97,.5);background:var(--panel);box-shadow:none">
+      <div class="engrave" style="color:var(--legend-2)">hard gate</div>
+      <p style="margin:0">No accepted packet, no destination — no matter how close. Dispatch sees this list; overrides are signed.</p>
+    </div>
+  </div>
+
+  <!-- handover -->
+  <div class="pane" data-p="qr">
+    <div class="engrave">handover</div>
+    <h2>INC-0421 → Korle Bu</h2>
+    <div class="card">
+      <div class="r"><span class="k">Payload</span><b style="font-size:11px">vitals · alerts · interventions · ETA</b></div>
+      <div class="r"><span class="k">Integrity</span><span class="chip ok">sha-256 ✓ · node-07</span></div>
+    </div>
+    <div class="qrwrap">
+      <div class="qr"><svg viewBox="0 0 21 21" aria-label="handover QR">
+        <rect width="21" height="21" fill="#EFE7DC"/><g fill="#14110F">
+        <rect x="0" y="0" width="7" height="7"/><rect x="1" y="1" width="5" height="5" fill="#EFE7DC"/><rect x="2" y="2" width="3" height="3"/>
+        <rect x="14" y="0" width="7" height="7"/><rect x="15" y="1" width="5" height="5" fill="#EFE7DC"/><rect x="16" y="2" width="3" height="3"/>
+        <rect x="0" y="14" width="7" height="7"/><rect x="1" y="15" width="5" height="5" fill="#EFE7DC"/><rect x="2" y="16" width="3" height="3"/>
+        <rect x="9" y="1" width="1" height="1"/><rect x="11" y="2" width="1" height="2"/><rect x="9" y="5" width="2" height="1"/>
+        <rect x="13" y="9" width="1" height="1"/><rect x="15" y="10" width="2" height="1"/><rect x="18" y="9" width="1" height="2"/>
+        <rect x="9" y="9" width="1" height="3"/><rect x="11" y="11" width="2" height="1"/><rect x="9" y="14" width="1" height="1"/>
+        <rect x="11" y="16" width="1" height="2"/><rect x="14" y="14" width="2" height="1"/><rect x="17" y="15" width="1" height="1"/>
+        <rect x="19" y="14" width="2" height="2"/><rect x="14" y="18" width="1" height="2"/><rect x="16" y="19" width="3" height="1"/>
+        <rect x="9" y="19" width="1" height="1"/><rect x="13" y="12" width="1" height="1"/><rect x="19" y="12" width="1" height="1"/>
+        </g></svg></div>
+      <div class="mono" style="font-size:9.5px;letter-spacing:.1em;color:var(--amber)">ENCRYPTED · SINGLE-USE · EXPIRES 5:00</div>
+      <div style="font-size:11.5px;color:var(--legend-2);margin-top:6px">ED clinician scans — both sides write a signed audit row</div>
+    </div>
+  </div>
+
+  <!-- node health -->
+  <div class="pane" data-p="node">
+    <div class="engrave">node health</div>
+    <h2>Node status</h2>
+    <div class="card">
+      <div class="r"><span class="k">Node A (tap)</span><span class="chip ok">recording</span></div>
+      <div class="r"><span class="k">Monitor link</span><b class="mono" style="font-size:11px">UMEC10 · BLE · 1.2 S</b></div>
+      <div class="r"><span class="k">AI pipeline</span><b class="mono" style="font-size:11px">240 MS · 3 MODELS</b></div>
+      <div class="r"><span class="k">Mesh</span><b class="mono" style="font-size:11px">NODE-04 2KM · DISP 11KM</b></div>
+      <div class="r"><span class="k">Forward queue</span><b class="mono">0</b></div>
+      <div class="r"><span class="k">Protocols</span><span class="chip ok">v7 · 5/5 sig</span></div>
+      <div class="r"><span class="k">Case key</span><span class="chip info">active · wrapped at rest</span></div>
+      <div class="r"><span class="k">Power</span><b class="mono" style="font-size:11px">12 V ✓ · UPS 41 MIN</b></div>
+    </div>
+    <div class="note">Field-debug screen. Anything red here → full manual fallback still works.</div>
+  </div>
+
+  </div><!-- /scroll -->
+
+  <div class="nav">
+    <button data-go="call"><b>▤</b>Call</button>
+    <button data-go="vitals" aria-selected="true"><b>∿</b>Vitals</button>
+    <button data-go="treat"><b>✚</b>Treat</button>
+    <button data-go="route"><b>➤</b>Route</button>
+    <button data-go="qr"><b>⛓</b>Handover</button>
+    <button data-go="node"><b>⚙</b>Node</button>
+  </div>
+
+  <!-- CPR -->
+  <div class="cpr" id="cpr">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+      <div>
+        <div class="engrave" style="color:var(--red)">emergency · protocol 7.1</div>
+        <h2 style="color:var(--red)">CARDIAC ARREST — CPR</h2>
+        <div class="mono" style="font-size:9px;letter-spacing:.09em;color:var(--legend-2);margin-top:5px">
+          PULSE ABSENT 14:11:37 · ONSET LOGGED + SIGNED</div>
+      </div>
+      <button class="ghost" onclick="cprOff()">✕ exit CPR mode</button>
+    </div>
+
+    <div style="display:flex;gap:10px;margin:16px 0 12px">
+      <div style="flex:1;background:var(--panel);border:1px solid var(--brass);border-radius:var(--r);padding:12px 14px">
+        <div class="engrave">elapsed</div>
+        <div class="clock" id="cprclock" style="font-size:40px">00:00</div>
+      </div>
+      <div style="flex:1;background:var(--panel);border:1px solid var(--green);border-radius:var(--r);padding:12px 14px">
+        <div class="engrave" style="color:var(--green)">compression rate — target</div>
+        <div style="display:flex;align-items:baseline;gap:7px">
+          <span class="clock" style="font-size:40px;color:var(--green);text-shadow:0 0 26px rgba(74,222,128,.3)">110</span>
+          <span class="mono" style="font-size:12px;color:var(--legend-2)">/min</span>
+          <span class="beat" id="beat" style="margin-left:auto"></span>
+        </div>
+        <div class="rail" style="margin:8px 0 0"><div class="track"></div>
+          <div class="safe" style="left:38%;width:44%"></div>
+          <div class="ticks"></div>
+          <div class="marker" style="left:56%;background:var(--green);box-shadow:0 0 10px rgba(74,222,128,.7)"></div>
+        </div>
+        <div class="ends" style="padding:2px 0 0"><span>80</span><span>100</span><span>140</span></div>
+      </div>
+    </div>
+
+    <div style="overflow:auto">
+      <div class="step" style="border-left-color:var(--green);background:#18201A">
+        <span class="no" style="color:var(--green)">1</span> Compressions <b class="mono">100–120/min · 5–6 cm</b>
+        <span class="sp chip ok">now</span></div>
+      <div class="step"><span class="no">2</span> AED on · analyse rhythm <span class="sp chip warn">next</span></div>
+      <div class="step" style="border-left-color:var(--amber)"><span class="no">3</span> Shock if VT/VF · 200 J biphasic <span class="sp chip warn">shock</span></div>
+      <div class="step"><span class="no">4</span> Resume CPR 2 min · re-analyse <span class="sp chip">at 02:00</span></div>
+      <div class="step" style="border-left-color:var(--cyan)"><span class="no" style="color:var(--cyan)">5</span> Adrenaline 1 mg IV every 3–5 min <span class="sp chip info">auto-logged</span></div>
+    </div>
+    <div class="note" style="margin-top:16px">Every step + timestamp writes to the signed record. Cycle 1 analysis due at 02:00.</div>
+  </div>
+ </div>
 </div>
 
-<!-- ==================== DISPATCH ==================== -->
-<div class="client" id="client-dispatch">
-  <div class="device wide">
-    <div class="statusbar">
-      <span><span class="dot g"></span>NAS ACCRA CONTROL</span>
-      <span>41 UNITS · 27 FREE · 4 EN-ROUTE · MESH HEALTHY</span>
-      <span class="clock">14:22</span>
+<!-- ══════════════ DISPATCH ══════════════ -->
+<div class="client" id="c-ops">
+ <div class="device wide">
+  <div class="bar">
+    <span><span class="lamp"></span>NAS ACCRA CONTROL</span>
+    <span>41 UNITS · 27 FREE · 4 EN-ROUTE · MESH HEALTHY</span>
+    <span class="clk">14:22</span>
+  </div>
+  <div class="tri">
+    <div class="col">
+      <h4>Incident queue</h4>
+      <div class="inc p1">
+        <div class="id">INC-0416 <span class="chip crit">critical</span></div>
+        <div class="w">NODE-07 · on scene 6 min</div>
+        <div class="al">▲ SpO₂ 82 · VT · sepsis 0.81</div>
+      </div>
+      <div class="inc p2"><div class="id">INC-0421 <span class="chip warn">pending</span></div>
+        <div class="w">RTC, 2 casualties — N1 Mile 7</div><div class="m">2 MIN AGO · UNASSIGNED</div></div>
+      <div class="inc p2"><div class="id">INC-0420 <span class="chip warn">pending</span></div>
+        <div class="w">OB labour — Madina</div><div class="m">6 MIN AGO · UNASSIGNED · OB ESCALATION 2/3</div></div>
+      <div class="inc"><div class="id">INC-0419 <span class="chip info">dispatched</span></div>
+        <div class="w">NODE-12 · ETA scene 4 min</div></div>
+      <div class="inc"><div class="id">INC-0411 <span class="chip ok">transport</span></div>
+        <div class="w">NODE-19 → Korle Bu · ETA 9 min</div><div class="m">PACKET ACCEPTED ✓</div></div>
     </div>
-    <div class="triptych">
-      <!-- queue -->
-      <div class="pane">
-        <h3>Incident queue</h3>
-        <div class="incident crit">
-          <div class="id">INC-0416 <span class="pill r" style="float:right">critical</span></div>
-          <div class="w">NODE-07 · on scene 6 min</div>
-          <div class="al">▲ SpO₂ 82 · VT · sepsis 0.81</div>
+
+    <div class="col">
+      <h4>Fleet — live · cached tiles</h4>
+      <div class="map">
+        <svg width="100%" height="100%" viewBox="0 0 620 252" preserveAspectRatio="none">
+          <defs><pattern id="g3" width="41" height="42" patternUnits="userSpaceOnUse">
+            <path d="M 41 0 L 0 0 0 42" fill="none" stroke="rgba(201,169,97,.09)" stroke-width="1"/></pattern></defs>
+          <rect width="620" height="252" fill="url(#g3)"/>
+          <path d="M0,192 C125,172 205,150 328,140 S 530,110 620,90" stroke="rgba(201,169,97,.22)" stroke-width="5" fill="none"/>
+          <path d="M84,252 C145,182 248,120 390,60" stroke="rgba(201,169,97,.14)" stroke-width="4" fill="none"/>
+          <text x="14" y="206" fill="#7A6F62" font-family="IBM Plex Mono" font-size="9">N1</text>
+        </svg>
+        <div class="pin" style="left:22%;top:62%;background:var(--green);color:var(--green)"><span>NODE-04</span></div>
+        <div class="pin" style="left:46%;top:70%;background:var(--amber);color:var(--amber)"><span>NODE-07 ▸ SCENE</span></div>
+        <div class="pin" style="left:63%;top:38%;background:var(--cyan);color:var(--cyan)"><span>NODE-12 ▸ ENRT</span></div>
+        <div class="pin" style="left:80%;top:52%;background:var(--red);color:var(--red)"><span>NODE-19 ▸ TRNSP</span></div>
+        <div class="pin h" style="left:56%;top:50%;color:var(--legend)"><span>KORLE BU ▣ 4</span></div>
+        <div class="pin h" style="left:71%;top:76%;color:var(--legend)"><span>37 MIL ▣ 2</span></div>
+        <div class="mono" style="position:absolute;left:10px;bottom:8px;font-size:8px;color:var(--legend-2);line-height:1.7">
+          <div><span style="color:var(--green)">●</span> available &nbsp; <span style="color:var(--amber)">●</span> on scene &nbsp; <span style="color:var(--cyan)">●</span> en route</div>
+          <div><span style="color:var(--red)">●</span> transporting &nbsp; <span style="color:var(--legend)">▣</span> receiving hospital</div>
         </div>
-        <div class="incident">
-          <div class="id">INC-0421 <span class="pill a" style="float:right">pending</span></div>
-          <div class="w">RTC, 2 casualties — N1 Mile 7</div>
-          <div class="t">2 MIN AGO · UNASSIGNED</div>
-        </div>
-        <div class="incident">
-          <div class="id">INC-0420 <span class="pill a" style="float:right">pending</span></div>
-          <div class="w">OB labour — Madina</div>
-          <div class="t">6 MIN AGO · UNASSIGNED</div>
-        </div>
-        <div class="incident">
-          <div class="id">INC-0419 <span class="pill c" style="float:right">dispatched</span></div>
-          <div class="w">NODE-12 · ETA scene 4 min</div>
-        </div>
-        <div class="incident">
-          <div class="id">INC-0411 <span class="pill g" style="float:right">transport</span></div>
-          <div class="w">NODE-19 → Korle Bu · ETA 9 min</div>
-          <div class="t">PACKET ACCEPTED ✓</div>
-        </div>
+        <div class="mono" style="position:absolute;right:10px;bottom:8px;font-size:8px;color:var(--legend-3)">▭ 2 km · schem · offline tiles</div>
       </div>
-      <!-- map -->
-      <div class="pane">
-        <h3>Fleet — live (cached tiles)</h3>
-        <div class="mapbox">
-          <svg width="100%" height="100%" viewBox="0 0 600 250" preserveAspectRatio="none">
-            <defs><pattern id="gr" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(148,178,255,.07)" stroke-width="1"/>
-            </pattern></defs>
-            <rect width="600" height="250" fill="url(#gr)"/>
-            <path d="M0,190 C120,170 200,150 320,140 S520,110 600,90" stroke="rgba(148,178,255,.18)" stroke-width="5" fill="none"/>
-            <path d="M80,250 C140,180 240,120 380,60" stroke="rgba(148,178,255,.12)" stroke-width="4" fill="none"/>
-            <text x="14" y="204" fill="#5A6A85" font-family="JetBrains Mono" font-size="9">N1</text>
-          </svg>
-          <div class="pin" style="left:22%;top:62%;background:var(--phos);color:var(--phos)"><span>NODE-04</span></div>
-          <div class="pin" style="left:46%;top:70%;background:var(--amber);color:var(--amber)"><span>NODE-07 ▸ SCENE</span></div>
-          <div class="pin" style="left:63%;top:38%;background:var(--cyan);color:var(--cyan)"><span>NODE-12 ▸ ENRT</span></div>
-          <div class="pin" style="left:80%;top:52%;background:var(--red);color:var(--red)"><span>NODE-19 ▸ TRNSP</span></div>
-          <div class="pin hosp" style="left:56%;top:50%;background:#fff;color:#fff"><span>KORLE BU ▣ 4</span></div>
-          <div class="pin hosp" style="left:71%;top:76%;background:#fff;color:#fff"><span>37 MIL ▣ 2</span></div>
-        </div>
-        <div class="card" style="margin-top:14px">
-          <div class="row"><span>CRDT replica</span><span class="pill g">in sync</span></div>
-          <div class="row"><span>Countersigning</span><span class="mval" style="font-size:11px">1,204 RECORDS TODAY</span></div>
-          <div class="row"><span>Mesh partitions</span><span class="mval" style="font-size:11px">2 UNITS DARK &gt;15 MIN</span></div>
-        </div>
+      <div class="card" style="margin-top:12px">
+        <div class="r"><span class="k">CRDT replica</span><span class="chip ok">in sync</span></div>
+        <div class="r"><span class="k">Countersigning</span><b class="mono" style="font-size:11px">1,204 RECORDS TODAY</b></div>
+        <div class="r"><span class="k">Mesh partitions</span><b class="mono" style="font-size:11px;color:var(--amber)">2 UNITS DARK &gt;15 MIN</b></div>
       </div>
-      <!-- routing -->
-      <div class="pane">
-        <h3>Routing — INC-0416 (sepsis / VT)</h3>
-        <table>
-          <tr><th>#</th><th>Hospital</th><th>Dist</th><th>Capability</th><th>Beds</th><th>Score</th></tr>
-          <tr><td class="m">1</td><td>Korle Bu</td><td class="m">3.2</td><td><span class="pill g">ICU·CARDIO</span></td><td class="m">4</td><td class="scorecell">89</td></tr>
-          <tr><td class="m">2</td><td>37 Military</td><td class="m">5.8</td><td><span class="pill g">ICU·CARDIO</span></td><td class="m">2</td><td class="scorecell" style="color:var(--txt)">74</td></tr>
-          <tr><td class="m">3</td><td>Ridge</td><td class="m">6.1</td><td><span class="pill a">NO CARDIO</span></td><td class="m">6</td><td class="scorecell" style="color:var(--amber)">51</td></tr>
-          <tr class="gated"><td class="m">✗</td><td>Accra Gen</td><td class="m">2.4</td><td><span class="pill r">NO PACKET</span></td><td class="m">—</td><td class="scorecell" style="color:var(--red)">—</td></tr>
-        </table>
-        <div class="btnrow" style="margin-top:14px">
-          <button class="primary">Confirm crew choice</button>
-          <button class="danger">Override — signed</button>
-        </div>
-        <div class="note">Crew sees this same ranking. An override lands in the incident record with your identity attached.</div>
+    </div>
+
+    <div class="col">
+      <h4>Routing — INC-0416 (sepsis / VT)</h4>
+      <table>
+        <tr><th>#</th><th>Hospital</th><th>Dist</th><th>Capability</th><th>Beds</th><th>Score</th></tr>
+        <tr><td class="n">1</td><td>Korle Bu</td><td class="n">3.2</td><td><span class="chip ok">ICU·CARDIO</span></td><td class="n">4</td><td class="score">89</td></tr>
+        <tr><td class="n">2</td><td>37 Military</td><td class="n">5.8</td><td><span class="chip ok">ICU·CARDIO</span></td><td class="n">2</td><td class="score" style="color:var(--legend)">74</td></tr>
+        <tr><td class="n">3</td><td>Ridge</td><td class="n">6.1</td><td><span class="chip warn">NO CARDIO</span></td><td class="n">6</td><td class="score" style="color:var(--amber)">51</td></tr>
+        <tr class="off"><td class="n">✗</td><td>Accra Gen</td><td class="n">2.4</td><td><span class="chip crit">NO PACKET</span></td><td class="n">—</td><td class="score" style="color:var(--red)">—</td></tr>
+      </table>
+      <div class="row-btns" style="margin-top:12px">
+        <button class="go">Confirm crew choice</button>
+        <button class="stop">Override — signed</button>
       </div>
+      <div class="note">Crew sees this same ranking. An override lands in the incident record with your identity attached.</div>
     </div>
   </div>
+ </div>
 </div>
 
-<!-- ==================== HOSPITAL ==================== -->
-<div class="client" id="client-hospital">
-  <div class="device">
-    <div class="statusbar">
-      <span><span class="dot g"></span>KORLE BU ED</span>
-      <span>BEDS 4 · CARDIO ON · QUEUE 2</span>
-      <span class="clock">14:22</span>
-    </div>
-
-    <div class="screen active" data-screen="scan">
-      <div class="eyebrow">receive</div>
-      <h2>Incoming patients</h2>
-      <div class="scanzone">
-        <div class="glyph">▣</div>
-        <p>Point at the crew's QR — or the packet<br>may already be here via mesh</p>
-        <button class="primary" data-go="card">Simulate scan</button>
-      </div>
-      <div class="card">
-        <div class="row"><span>Pre-arrival packets</span><span class="pill g">1 received</span></div>
-        <div class="row"><span>INC-0411 · NODE-19</span><b class="mval">ETA 9 MIN</b></div>
-      </div>
-      <button style="width:100%" data-go="card">Open packet</button>
-    </div>
-
-    <div class="screen" data-screen="card">
-      <div class="verifyline">
-        <h2 style="margin:0">INC-0411</h2>
-        <span class="sig">✓ SIGNED · NODE-19 · HASH OK</span>
-      </div>
-      <div class="card">
-        <div class="row"><span>Patient</span><b>54 M · chest pain 40 min</b></div>
-        <div class="row"><span>Impression</span><b style="color:var(--red)">STEMI — AI 0.93</b></div>
-        <div class="row"><span>Vitals now</span><b class="mval" style="font-size:11.5px">HR 128 · SpO₂ 94 · 148/92 · RR 22</b></div>
-        <div class="row"><span>Trend</span><b class="mval" style="font-size:11px">SpO₂ 89→94 · HR 141→128</b></div>
-        <div class="row"><span>Given</span><span style="font-size:11.5px">ASA 300 mg · GTN ×2 · O₂ 4 L</span></div>
-        <div class="row"><span>Protocol</span><span class="mval" style="font-size:11px">CARDIAC 2.1 V5 · 5/5 SIG</span></div>
-        <div class="row"><span>ETA</span><b class="mval" style="color:var(--cyan)">9 MIN · CREW 2</b></div>
-      </div>
-      <button class="phos bigaccept" data-go="accepted">Accept — reserve Resus 2</button>
-      <div class="qsmall">
-        <button>Query crew</button>
-        <button class="danger">Refuse — reason required</button>
-      </div>
-      <div class="note">Accepting publishes to the mesh and countersigns the record. A refusal needs a reason — it becomes part of the incident.</div>
-    </div>
-
-    <div class="screen" data-screen="accepted">
-      <div class="accepted-hero">
-        <div class="big">✓ Bed reserved — Resus 2</div>
-        <div class="sub">INC-0411 · CARDIO PAGED · DR. OSEI NOTIFIED</div>
-      </div>
-      <div class="card">
-        <div class="row"><span>Ambulance</span><span style="font-size:11.5px">NODE-19 — crew sees “bed waiting”</span></div>
-        <div class="row"><span>Record</span><span class="pill g">countersigned · audit row written</span></div>
-        <div class="row"><span>ETA</span><b class="mval">9 MIN</b></div>
-      </div>
-      <button data-go="scan">Back to receiver</button>
-    </div>
-
-    <div class="navbar">
-      <button data-go="scan" class="active">Receive</button>
-      <button data-go="card">Patient</button>
-    </div>
+<!-- ══════════════ HOSPITAL ══════════════ -->
+<div class="client" id="c-ed">
+ <div class="device">
+  <div class="bar">
+    <span><span class="lamp"></span>KORLE BU ED</span>
+    <span>BEDS 4 · CARDIO ON · QUEUE 2</span>
+    <span class="clk">14:22</span>
   </div>
+  <div class="scroll">
+
+  <div class="pane on" data-p="recv">
+    <div class="engrave">receive</div>
+    <h2>Incoming patients</h2>
+    <div class="scan">
+      <div class="g">▣</div>
+      <p style="color:var(--legend-2);font-size:12px;margin:10px 0 14px;line-height:1.5">
+        Point at the crew's QR — or the packet<br>may already be here over mesh</p>
+      <button class="go" data-go="pt">Simulate scan</button>
+    </div>
+    <div class="card">
+      <div class="r"><span class="k">Pre-arrival packets</span><span class="chip ok">1 received</span></div>
+      <div class="r"><span class="k">INC-0411 · NODE-19</span><b class="mono" style="color:var(--cyan)">ETA 9 MIN</b></div>
+    </div>
+    <button style="width:100%" data-go="pt">Open packet</button>
+  </div>
+
+  <div class="pane" data-p="pt">
+    <div class="seal" style="margin-bottom:12px">
+      <h2>INC-0411</h2><span class="sig">✓ SIGNED · NODE-19 · HASH OK</span>
+    </div>
+    <div class="card">
+      <div class="r"><span class="k">Patient</span><b>54 M · chest pain 40 min</b></div>
+      <div class="r"><span class="k">Impression</span><b style="color:var(--red)">STEMI — AI 0.93</b></div>
+      <div class="r"><span class="k">Vitals now</span><b class="mono" style="font-size:11px">HR 128 · SpO₂ 94 · 148/92 · RR 22</b></div>
+      <div class="r"><span class="k">Trend</span><b class="mono" style="font-size:11px">SpO₂ 89→94 · HR 141→128</b></div>
+      <div class="r"><span class="k">Given</span><b style="font-size:11.5px">ASA 300 mg · GTN ×2 · O₂ 4 L</b></div>
+      <div class="r"><span class="k">Protocol</span><b class="mono" style="font-size:11px">CARDIAC 2.1 V5 · 5/5 SIG</b></div>
+      <div class="r"><span class="k">ETA</span><b class="mono" style="color:var(--cyan)">9 MIN · CREW 2</b></div>
+    </div>
+    <button class="go" style="width:100%;margin-bottom:8px" data-go="ok">Accept — reserve Resus 2</button>
+    <div class="row-btns">
+      <button style="flex:1">Query crew</button>
+      <button class="stop" style="flex:1">Refuse — reason required</button>
+    </div>
+    <div class="note">Accepting publishes to the mesh and countersigns the record. A refusal needs a reason — it becomes part of the incident.</div>
+
+    <div class="engrave" style="margin-top:20px">ed queue · 3 waiting</div>
+    <div class="inc"><div class="id">INC-0417 <span class="chip crit">critical</span></div>
+      <div class="w">Trauma, 2 vehicles — 19 M · GCS 9</div><div class="m">ARRIVING 4 MIN · BAY 1 RESERVED</div></div>
+    <div class="inc p2"><div class="id">INC-0415 <span class="chip warn">triage</span></div>
+      <div class="w">Sepsis, 61 F · lactate 4.2 — waiting 11 min</div><div class="m">BED HELD · NO UNIT EN ROUTE</div></div>
+    <div class="inc"><div class="id">INC-0413 <span class="chip">transport</span></div>
+      <div class="w">Post-op, 44 M — from 37 Military</div><div class="m">ETA 22 MIN · NO PACKET YET</div></div>
+    <div class="note">Queue order is arrival time, not severity — severity drives the clinical tag, not the position.</div>
+  </div>
+
+  <div class="pane" data-p="ok">
+    <div class="done-hero">
+      <div class="b">✓ Bed reserved — Resus 2</div>
+      <div class="s">INC-0411 · CARDIO PAGED · DR. OSEI NOTIFIED</div>
+    </div>
+    <div class="card">
+      <div class="r"><span class="k">Ambulance</span><b style="font-size:11.5px">NODE-19 — crew sees “bed waiting”</b></div>
+      <div class="r"><span class="k">Record</span><span class="chip ok">countersigned · audit row written</span></div>
+      <div class="r"><span class="k">ETA</span><b class="mono">9 MIN</b></div>
+    </div>
+    <button data-go="recv">Back to receiver</button>
+  </div>
+
+  </div>
+  <div class="nav">
+    <button data-go="recv" aria-selected="true"><b>▣</b>Receive</button>
+    <button data-go="pt"><b>🧾</b>Patient</button>
+  </div>
+ </div>
 </div>
 
 <script>
-  document.querySelectorAll('.tab').forEach(t=>{
-    t.onclick=()=>{
-      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-      document.querySelectorAll('.client').forEach(x=>x.classList.remove('active'));
-      t.classList.add('active');
-      document.getElementById('client-'+t.dataset.client).classList.add('active');
-    };
-  });
-  document.querySelectorAll('[data-go]').forEach(b=>{
-    b.onclick=e=>{
-      e.stopPropagation();
-      const dev=b.closest('.device');
-      dev.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-      const target=dev.querySelector('[data-screen="'+b.dataset.go+'"]');
-      if(target) target.classList.add('active');
-      dev.querySelectorAll('.navbar button').forEach(n=>n.classList.toggle('active',n.dataset.go===b.dataset.go));
-    };
-  });
-  setInterval(()=>{document.querySelectorAll('.clock').forEach(c=>{
-    const d=new Date();c.textContent=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
-  });},1000);
-
-  // ===== quick log =====
-  function quickLog(label){
-    const d=new Date(),t=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0');
-    document.getElementById('quicklog-card').style.display='block';
-    const el=document.getElementById('quicklog-entries');
-    el.innerHTML='<div><span style="color:var(--phos)">'+t+'</span> · '+label+' · <span style="color:var(--phos)">SIGNED ✓</span></div>'+el.innerHTML;
-  }
-
-  // ===== CPR overlay =====
-  let cprStart=null,cprInt=null,metInt=null;
-  function openCpr(){
-    const o=document.getElementById('cpr-overlay');o.style.display='flex';
-    document.getElementById('cpr-overlay').closest('.device').style.position='relative';
-    cprStart=Date.now();
-    cprInt=setInterval(()=>{
-      const s=Math.floor((Date.now()-cprStart)/1000);
-      document.getElementById('cpr-timer').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
-    },500);
-    // 110 bpm metronome
-    const p=document.getElementById('cpr-pulse');let on=false;
-    metInt=setInterval(()=>{on=!on;p.style.transform=on?'scale(.55)':'scale(1)';p.style.transition='transform .12s';},545);
-    quickLog('CPR started — onset 14:11:37');
-  }
-  function closeCpr(){
-    document.getElementById('cpr-overlay').style.display='none';
-    clearInterval(cprInt);clearInterval(metInt);
-    quickLog('CPR mode closed');
-  }
-
-  // ===== phosphor ECG sweep =====
-  const cv=document.getElementById('ecg-canvas');
-  if(cv){
-    const ctx=cv.getContext('2d');
-    function size(){cv.width=cv.clientWidth*2;cv.height=192}
-    size();window.addEventListener('resize',size);
-    const spikes=[0.06,0.18,0.30,0.42,0.54,0.66,0.78,0.90];
-    function traceY(x){ // x in [0,1]
-      let y=0.62;
-      for(const s of spikes){
-        const d=(x-s+1)%1;
-        if(d<0.02)y=0.62-d/0.02*0.5;
-        else if(d<0.04)y=0.12+(d-0.02)/0.02*0.66;
-        else if(d<0.055)y=0.78-(d-0.04)/0.015*0.16;
-      }
-      return y*cv.height;
+// tabs
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected','false'));
+  document.querySelectorAll('.client').forEach(x=>x.classList.remove('on'));
+  t.setAttribute('aria-selected','true');
+  document.getElementById('c-'+t.dataset.c).classList.add('on');
+});
+// in-device nav
+function to(p){
+  const dev=document.querySelector('#c-crew .device');
+  dev.querySelectorAll('.pane').forEach(s=>s.classList.remove('on'));
+  const t=dev.querySelector('[data-p="'+p+'"]'); if(t)t.classList.add('on');
+  dev.querySelectorAll('.nav button').forEach(b=>b.setAttribute('aria-selected', b.dataset.go===p?'true':'false'));
+  dev.scrollTop=0; dev.querySelector('.scroll').scrollTop=0;
+}
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=e=>{
+  e.stopPropagation();
+  const p=b.dataset.go, dev=b.closest('.device');
+  dev.querySelectorAll('.pane').forEach(s=>s.classList.remove('on'));
+  const t=dev.querySelector('[data-p="'+p+'"]'); if(t)t.classList.add('on');
+  dev.querySelectorAll('.nav button').forEach(n=>n.setAttribute('aria-selected', n.dataset.go===p?'true':'false'));
+});
+function pick(el){
+  el.parentNode.querySelectorAll('.dest').forEach(d=>d.setAttribute('aria-selected','false'));
+  el.setAttribute('aria-selected','true');
+}
+// clock
+setInterval(()=>{const d=new Date();
+  document.querySelectorAll('.clk').forEach(c=>c.textContent=
+    String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'));},1000);
+// quick log
+function ql(label){
+  const d=new Date(), t=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0');
+  const box=document.getElementById('qlbox'), card=document.getElementById('qlcard');
+  card.style.display='block';
+  box.innerHTML='<div><span style="color:var(--green)">'+t+'</span> · '+label+' · <span style="color:var(--green)">SIGNED ✓</span></div>'+box.innerHTML;
+}
+// CPR
+let t0=null,ti=null,mi=null;
+function cprOn(){
+  document.getElementById('cpr').classList.add('on');
+  t0=Date.now();
+  ti=setInterval(()=>{const s=Math.floor((Date.now()-t0)/1000);
+    document.getElementById('cprclock').textContent=
+      String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');},500);
+  const b=document.getElementById('beat'); let on=false;
+  mi=setInterval(()=>{on=!on;b.style.transform=on?'scale(.55)':'scale(1)';b.style.transition='transform .1s';},545);
+  ql('CPR started — onset 14:11:37');
+}
+function cprOff(){
+  document.getElementById('cpr').classList.remove('on');
+  clearInterval(ti);clearInterval(mi);ql('CPR mode closed');
+}
+// live trace: cyan signal with afterglow
+const cv=document.getElementById('ecg'), cx=cv.getContext('2d');
+function fit(){cv.width=cv.clientWidth*2;cv.height=184;}
+fit();window.addEventListener('resize',fit);
+const beats=[.05,.17,.29,.41,.53,.65,.77,.89];
+function wave(x){let y=.6;for(const b of beats){const d=(x-b+1)%1;
+  if(d<.018)y=.6-d/.018*.46; else if(d<.036)y=.14+(d-.018)/.018*.62;
+  else if(d<.05)y=.76-(d-.036)/.014*.16;}return y*cv.height;}
+let head=0,last=performance.now();
+function frame(now){
+  const dt=(now-last)/1000;last=now;head=(head+dt*.26)%1;
+  cx.fillStyle='rgba(13,11,10,.30)';cx.fillRect(0,0,cv.width,cv.height);
+  // trail
+  for(let k=0;k<3;k++){
+    cx.beginPath();
+    const lead=(head-k*.05+1)%1, trail=.42;
+    for(let i=0;i<=150;i++){
+      const t=i/150, x=(lead-trail+t*trail+1)%1, px=x*cv.width;
+      i?cx.lineTo(px,wave(x)):cx.moveTo(px,wave(x));
     }
-    let head=0,last=performance.now();
-    function frame(now){
-      const dt=(now-last)/1000;last=now;
-      head=(head+dt*0.28)%1;
-      ctx.fillStyle='rgba(5,9,15,0.28)';ctx.fillRect(0,0,cv.width,cv.height);
-      ctx.beginPath();
-      const trail=0.35;
-      for(let i=0;i<=160;i++){
-        const x=(head-trail+ (trail*i/160)+1)%1;
-        const px=(head-trail+trail*i/160)*cv.width;
-        i===0?ctx.moveTo(px,traceY(x)):ctx.lineTo(px,traceY(x));
-      }
-      ctx.strokeStyle='#34F5A5';ctx.lineWidth=2.4;
-      ctx.shadowColor='#34F5A5';ctx.shadowBlur=14;
-      ctx.stroke();ctx.shadowBlur=0;
-      // bright head dot
-      const hx=head*cv.width,hy=traceY(head);
-      ctx.beginPath();ctx.arc(hx,hy,3.6,0,7);ctx.fillStyle='#B8FFE0';ctx.fill();
-      requestAnimationFrame(frame);
-    }
-    requestAnimationFrame(frame);
+    cx.strokeStyle='rgba(127,212,245,'+(0.85-k*.24)+')';
+    cx.lineWidth=2.2-k*.5;cx.stroke();
   }
+  cx.beginPath();cx.arc(head*cv.width,wave(head),3.4,0,7);
+  cx.fillStyle='#DFF4FE';cx.shadowColor='#7FD4F5';cx.shadowBlur=16;cx.fill();cx.shadowBlur=0;
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
 </script>
 </body>
 </html>
